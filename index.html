@@ -87,7 +87,7 @@ button, input { font: inherit; color: inherit; }
 .prevbar .linkbtn { font: inherit; letter-spacing: inherit; white-space: nowrap; }
 
 /* momento 1 e 2: il muro */
-.track { position: relative; height: 250vh; }
+.track { position: relative; height: 200vh; }
 .stage {
   --band: 360px;
   position: sticky; top: 0;
@@ -102,9 +102,10 @@ button, input { font: inherit; color: inherit; }
   top: calc((100% - var(--band)) / 2);
   display: flex; flex-direction: column; gap: var(--g);
   transform: translate(-50%, -50%) rotate(var(--tilt)) scale(1.22);
+  transition: transform 1.1s cubic-bezier(.22, .7, .2, 1), opacity .7s ease .4s;
   will-change: transform, opacity;
 }
-.row { display: flex; gap: var(--g); width: max-content; transform: translateX(var(--off, 0vw)); }
+.row { display: flex; gap: var(--g); width: max-content; transform: translateX(var(--off, 0vw)); transition: translate 1.1s cubic-bezier(.22, .7, .2, 1); }
 .row:nth-child(2) { --off: -12.5vw; }
 .row:nth-child(3) { --off: -4vw; }
 .tile {
@@ -131,17 +132,28 @@ button, input { font: inherit; color: inherit; }
 }
 .shade {
   position: absolute; inset: 0; z-index: 1; pointer-events: none;
-  background: var(--bg); opacity: 0;
+  background: var(--bg); opacity: 0; transition: opacity 1s ease;
 }
 .edge {
   position: absolute; left: 0; right: 0; bottom: 0; height: 22%; z-index: 1; pointer-events: none;
-  background: linear-gradient(rgba(5,7,10,0), var(--bg)); opacity: 0;
+  background: linear-gradient(rgba(5,7,10,0), var(--bg)); opacity: 0; transition: opacity 1s ease;
 }
 .line {
   position: absolute; inset: 0; z-index: 3; display: flex; align-items: center;
   opacity: 0; transform: scale(1.1);
+  transition: opacity .5s ease, transform .5s ease;
   pointer-events: none; will-change: transform, opacity;
 }
+/* i tre stati della scena: 0 muro inclinato, 1 muro dritto, 2 fila dei quattro passaggi.
+   Cambiano a tempo (non seguono la rotella), così nessuno scatto può saltarne uno. */
+.stage[data-state="1"] .wall, .stage[data-state="2"] .wall { transform: translate(-50%, -50%) translateY(var(--bh, 0px)) rotate(0deg) scale(1); }
+.stage[data-state="2"] .wall { opacity: 0; visibility: hidden; transition: transform 1.1s cubic-bezier(.22, .7, .2, 1), opacity .7s ease, visibility 0s linear .7s; }
+.stage[data-state="1"] .row:nth-child(odd), .stage[data-state="2"] .row:nth-child(odd) { translate: -70px 0; }
+.stage[data-state="1"] .row:nth-child(even), .stage[data-state="2"] .row:nth-child(even) { translate: 70px 0; }
+.stage[data-state="1"] .shade, .stage[data-state="2"] .shade { opacity: .55; }
+.stage[data-state="1"] .edge, .stage[data-state="2"] .edge { opacity: 1; }
+.stage[data-state="2"] .line { opacity: 1; transform: scale(1); transition: opacity .9s ease .6s, transform 1s ease .6s; }
+.stage[data-state="1"] .hero-text, .stage[data-state="2"] .hero-text { opacity: 0; transform: translateY(40px); pointer-events: none; }
 .line .wrap { width: 100%; }
 .line .eyebrow { margin-bottom: clamp(26px, 4vh, 44px); }
 .line-row { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(10px, 1.6vw, 24px); margin: 0; padding: 0; list-style: none; }
@@ -159,6 +171,7 @@ button, input { font: inherit; color: inherit; }
   position: absolute; z-index: 3; left: 0; right: 0; bottom: 0;
   padding-top: 72px; padding-bottom: clamp(24px, 5vh, 52px);
   background: linear-gradient(rgba(5,7,10,0), var(--bg) 72px);
+  transition: opacity .6s ease, transform .8s ease;
 }
 .hero-text h1 {
   margin: 0 0 clamp(16px, 2.6vh, 26px);
@@ -327,7 +340,7 @@ footer { border-top: 1px solid var(--line); padding-block: 30px calc(30px + 56px
   .row:nth-child(3) { --off: -6vw; }
 }
 @media (max-width: 760px) {
-  .track { height: 240vh; }
+  .track { height: 200vh; }
   .line-row { grid-template-columns: 1fr 1fr; gap: 34px 12px; }
   .line-row li:nth-child(n+3)::after { content: ""; position: absolute; left: -6px; right: -6px; top: -14px; height: 2px; background: var(--ribbon); z-index: -1; }
   .line-row::before { right: 0; }
@@ -366,7 +379,7 @@ footer { border-top: 1px solid var(--line); padding-block: 30px calc(30px + 56px
   .line { display: none; }
   .wall { --tilt: 0deg; transform: translate(-50%, -50%); }
   .row { transform: translateX(var(--off, 0vw)); }
-  .tile video, .btn { transition: none; }
+  .tile video, .btn, .wall, .row, .hero-text, .line, .shade, .edge { transition: none; }
 }
 </style>
 </head>
@@ -649,38 +662,45 @@ footer { border-top: 1px solid var(--line); padding-block: 30px calc(30px + 56px
     });
   }
   gate(lineVids, true);
-  var band = 0, shade = $('shade'), edge = $('edge'), lineBox = $('lineBox');
+  var band = 0;
   function clamp(x) { return x < 0 ? 0 : x > 1 ? 1 : x; }
-  function measure() { band = Math.max(0, heroText.offsetHeight - 36); stage.style.setProperty('--band', band + 'px'); }
-  /* Quattro tempi, uno dopo l'altro, così due cose non stanno mai insieme sullo schermo:
-     1) il muro si raddrizza (s da 0 a 0,30); 2) il muro dritto resta fermo e si vede (0,30 a 0,55);
-     3) il muro sfuma e sparisce (0,55 a 0,65); 4) compare la fila dei quattro passaggi (0,65 a 0,85), poi resta ferma.
-     Ogni elemento riceve i suoi valori direttamente: nessuna variabile condivisa che
-     obbliga il browser a ricalcolare tutta la pagina a ogni scatto della rotella. */
+  function measure() { band = Math.max(0, heroText.offsetHeight - 36); stage.style.setProperty('--band', band + 'px'); stage.style.setProperty('--bh', (band / 2) + 'px'); }
+  /* La scena ha tre stati: 0 muro inclinato, 1 muro dritto, 2 fila dei quattro passaggi.
+     Lo scorrimento sceglie solo quale stato si vuole raggiungere; i cambi li fa la pagina
+     a tempo, uno alla volta, e ognuno dura almeno STEP millisecondi. Così una spinta forte
+     del trackpad non può saltare il muro dritto, e la pagina non ricalcola nulla a ogni scatto. */
+  var STATE = 0, TARGET = 0, locked = false, STEP = 1100, tmr = 0;
+  function setState(n) {
+    STATE = n;
+    stage.setAttribute('data-state', n);
+    gate(lineVids, n !== 2);
+    if (n === 2) { setTimeout(function () { if (STATE === 2) gate(wallVids, true); }, 900); } else { gate(wallVids, false); }
+    var offWall = n === 2;
+    wall.style.pointerEvents = offWall ? 'none' : '';
+    if ('inert' in wall) wall.inert = offWall;
+    var hide = n >= 1;
+    heroText.style.pointerEvents = hide ? 'none' : '';
+    if ('inert' in heroText) heroText.inert = hide;
+  }
+  function step() {
+    if (locked || STATE === TARGET) return;
+    setState(STATE + (TARGET > STATE ? 1 : -1));
+    locked = true;
+    clearTimeout(tmr);
+    tmr = setTimeout(function () { locked = false; step(); }, STEP);
+  }
   function update() {
     ticking = false;
     if (rm.matches) return;
     var r = track.getBoundingClientRect();
     var range = Math.max(1, r.height - window.innerHeight);
     var s = clamp(-r.top / range);
-    var p = clamp(s / 0.30), wo = 1 - clamp((s - 0.55) / 0.10), lo = clamp((s - 0.65) / 0.20);
-    wall.style.transform = 'translate(-50%, -50%) translateY(' + (band / 2 * p).toFixed(1) + 'px) rotate(' + (-9 * (1 - p)).toFixed(2) + 'deg) scale(' + (1.22 - 0.22 * p).toFixed(3) + ')';
-    wall.style.opacity = wo.toFixed(3);
-    wall.style.visibility = wo < 0.02 ? 'hidden' : '';
-    lineBox.style.opacity = lo.toFixed(3);
-    lineBox.style.transform = 'scale(' + (1.1 - 0.1 * lo).toFixed(3) + ')';
-    shade.style.opacity = (p * 0.55).toFixed(3);
-    edge.style.opacity = p.toFixed(3);
-    heroText.style.opacity = Math.max(0, 1 - p * 3).toFixed(3);
-    heroText.style.transform = 'translateY(' + (p * 40).toFixed(1) + 'px)';
-    gate(lineVids, lo < 0.02); gate(wallVids, wo < 0.02);
-    var off = wo < 0.7;
-    wall.style.pointerEvents = off ? 'none' : '';
-    if ('inert' in wall) wall.inert = off;
-    rows.forEach(function (row, i) { row.style.translate = ((i % 2 ? 1 : -1) * s * 90).toFixed(1) + 'px 0'; });
-    var hide = p > 0.5;
-    heroText.style.pointerEvents = hide ? 'none' : '';
-    if ('inert' in heroText) heroText.inert = hide;
+    /* soglie diverse in salita e in discesa, così al confine lo stato non sfarfalla */
+    if (s < 0.17) TARGET = 0;
+    else if (s < 0.47 && TARGET === 2) TARGET = 1;
+    else if (s > 0.55) TARGET = 2;
+    else if (s > 0.22 && TARGET === 0) TARGET = 1;
+    step();
   }
   function req() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
   window.addEventListener('scroll', req, { passive: true });
