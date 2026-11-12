@@ -518,15 +518,6 @@ footer { border-top: 1px solid var(--line); padding-block: 30px calc(30px + 56px
           </div>
         </form>
 
-        <div class="form result" id="result" hidden>
-          <h3>Scegli giorno e orario.</h3>
-          <p>I tuoi dati sono già inseriti. Scegli quando vuoi la call di 30 minuti.</p>
-          <iframe id="calFrame" class="calframe" title="Prenotazione della call di 30 minuti" referrerpolicy="strict-origin-when-cross-origin"></iframe>
-          <div class="actions">
-            <button class="ghost" type="button" id="edit">Modifica i dati</button>
-            <a class="linkbtn" id="calLink" href="#" target="_blank" rel="noopener noreferrer">Non vedi il calendario? Aprilo in una nuova scheda</a>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -582,7 +573,7 @@ footer { border-top: 1px solid var(--line); padding-block: 30px calc(30px + 56px
     <p>Non usiamo i tuoi dati per inviarti pubblicità e non li usiamo per profilarti. Non li vendiamo.</p>
 
     <h3>4. La prenotazione su Cal.com</h3>
-    <p>Le call si prenotano su Cal.com, un servizio esterno. Quando invii il modulo, il calendario di Cal.com compare dentro questa pagina e il nome, l’email e le note che hai scritto arrivano già compilati. Da quel momento i dati che inserisci nella prenotazione sono trattati anche da Cal.com, per fissare l’appuntamento e mandarti la conferma, secondo la sua informativa.</p>
+    <p>Le call si prenotano su Cal.com, un servizio esterno. Quando invii il modulo passi alla pagina di Cal.com, nella stessa scheda, dove il nome, l’email e le note che hai scritto arrivano già compilati. Da quel momento i dati che inserisci nella prenotazione sono trattati anche da Cal.com, per fissare l’appuntamento e mandarti la conferma, secondo la sua informativa.</p>
 
     <h3>5. Chi può vedere i dati</h3>
     <p>Li vediamo noi. Ci aiutano alcuni fornitori: chi ospita questa pagina e la posta elettronica di Vedeasy, e Cal.com per le prenotazioni. Non comunichiamo i dati ad altri, salvo obblighi di legge.</p>
@@ -596,7 +587,7 @@ footer { border-top: 1px solid var(--line); padding-block: 30px calc(30px + 56px
     <h3>8. Cookie</h3>
     <p>Questa pagina non usa cookie di profilazione, non usa cookie per le statistiche e non carica strumenti di terze parti per misurare le visite o fare pubblicità. Non ci sono Google Analytics, Google Tag Manager, pixel di Meta o remarketing.</p>
     <p>I caratteri e i video sono ospitati da noi, sulla stessa pagina, senza chiamare servizi esterni. Per questo non c’è un banner dei cookie: non c’è nulla da accettare o rifiutare. Possono essere usati solo strumenti tecnici necessari al funzionamento della pagina, che non richiedono consenso.</p>
-    <p>Quando il calendario di Cal.com compare nella pagina, quel servizio può usare i propri cookie: i dettagli sono nella sua informativa.</p>
+    <p>Quando passi alla pagina di Cal.com, quel servizio può usare i propri cookie: i dettagli sono nella sua informativa.</p>
 
     <h3>9. Modifiche</h3>
     <p>Se cambia qualcosa, per esempio se aggiungiamo uno strumento di statistiche, aggiorniamo questa pagina e la data in alto.</p>
@@ -816,7 +807,7 @@ footer { border-top: 1px solid var(--line); padding-block: 30px calc(30px + 56px
   });
 
   /* modulo: controlla i campi e prepara i dati per Cal.com */
-  var form = $('form'), result = $('result');
+  var form = $('form');
   var CAL = 'https://cal.com/giuseppe-castronovo-ncbsfy/30min';
   var MSG = {
     nome: 'Scrivi il tuo nome.',
@@ -860,13 +851,16 @@ footer { border-top: 1px solid var(--line); padding-block: 30px calc(30px + 56px
     notes.push('Ruolo: ' + v.prof);
     notes.push('Azienda: ' + v.rag);
     var cal = CAL + '?name=' + encodeURIComponent(v.nome + ' ' + v.cognome) + '&email=' + encodeURIComponent(v.email) + '&notes=' + encodeURIComponent(notes.join('\n'));
-    $('calLink').href = cal;
-    $('calFrame').src = cal + '&embed=true&layout=month_view&theme=dark';
-    form.hidden = true; result.hidden = false;
-    var h3 = result.querySelector('h3'); h3.setAttribute('tabindex', '-1'); h3.focus({ preventScroll: true });
-    result.scrollIntoView({ behavior: rm.matches ? 'auto' : 'smooth', block: 'start' });
+    /* si passa subito al calendario di Cal.com, nella stessa scheda, con i dati già scritti */
+    var go = form.querySelector('button[type="submit"]');
+    if (go) { go.disabled = true; go.textContent = 'Ti porto al calendario…'; }
+    window.location.assign(cal);
   });
-  $('edit').addEventListener('click', function () { result.hidden = true; $('calFrame').removeAttribute('src'); form.hidden = false; $('f-nome').focus(); });
+  /* se torna indietro dal calendario, il bottone è di nuovo pronto */
+  window.addEventListener('pageshow', function () {
+    var go = form.querySelector('button[type="submit"]');
+    if (go) { go.disabled = false; go.textContent = 'Prenota la call di 30 minuti'; }
+  });
 })();
 </script>
 </body>
