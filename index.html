@@ -87,7 +87,7 @@ button, input { font: inherit; color: inherit; }
 .prevbar .linkbtn { font: inherit; letter-spacing: inherit; white-space: nowrap; }
 
 /* momento 1 e 2: il muro */
-.track { position: relative; height: 200vh; }
+.track { position: relative; height: 280vh; }
 .stage {
   --band: 360px;
   position: sticky; top: 0;
@@ -340,7 +340,7 @@ footer { border-top: 1px solid var(--line); padding-block: 30px calc(30px + 56px
   .row:nth-child(3) { --off: -6vw; }
 }
 @media (max-width: 760px) {
-  .track { height: 200vh; }
+  .track { height: 260vh; }
   .line-row { grid-template-columns: 1fr 1fr; gap: 34px 12px; }
   .line-row li:nth-child(n+3)::after { content: ""; position: absolute; left: -6px; right: -6px; top: -14px; height: 2px; background: var(--ribbon); z-index: -1; }
   .line-row::before { right: 0; }
@@ -667,9 +667,12 @@ footer { border-top: 1px solid var(--line); padding-block: 30px calc(30px + 56px
   function measure() { band = Math.max(0, heroText.offsetHeight - 36); stage.style.setProperty('--band', band + 'px'); stage.style.setProperty('--bh', (band / 2) + 'px'); }
   /* La scena ha tre stati: 0 muro inclinato, 1 muro dritto, 2 fila dei quattro passaggi.
      Lo scorrimento sceglie solo quale stato si vuole raggiungere; i cambi li fa la pagina
-     a tempo, uno alla volta, e ognuno dura almeno STEP millisecondi. Così una spinta forte
+     a tempo, uno alla volta, e ognuno dura il tempo scritto in LOCK. Così una spinta forte
      del trackpad non può saltare il muro dritto, e la pagina non ricalcola nulla a ogni scatto. */
-  var STATE = 0, TARGET = 0, locked = false, STEP = 1100, tmr = 0;
+  var STATE = 0, TARGET = 0, locked = false, tmr = 0;
+  /* quanto resta fermo uno stato prima del successivo (millisecondi): il muro dritto ha
+     bisogno di 1,1 secondi per arrivare e di altro tempo per essere guardato */
+  var LOCK = { '0>1': 2300, '1>2': 1700, '2>1': 1800, '1>0': 1200 };
   function setState(n) {
     STATE = n;
     stage.setAttribute('data-state', n);
@@ -684,10 +687,11 @@ footer { border-top: 1px solid var(--line); padding-block: 30px calc(30px + 56px
   }
   function step() {
     if (locked || STATE === TARGET) return;
-    setState(STATE + (TARGET > STATE ? 1 : -1));
+    var from = STATE, to = STATE + (TARGET > STATE ? 1 : -1);
+    setState(to);
     locked = true;
     clearTimeout(tmr);
-    tmr = setTimeout(function () { locked = false; step(); }, STEP);
+    tmr = setTimeout(function () { locked = false; step(); }, LOCK[from + '>' + to] || 1500);
   }
   function update() {
     ticking = false;
@@ -696,10 +700,10 @@ footer { border-top: 1px solid var(--line); padding-block: 30px calc(30px + 56px
     var range = Math.max(1, r.height - window.innerHeight);
     var s = clamp(-r.top / range);
     /* soglie diverse in salita e in discesa, così al confine lo stato non sfarfalla */
-    if (s < 0.17) TARGET = 0;
-    else if (s < 0.47 && TARGET === 2) TARGET = 1;
-    else if (s > 0.55) TARGET = 2;
-    else if (s > 0.22 && TARGET === 0) TARGET = 1;
+    if (s < 0.12) TARGET = 0;
+    else if (s < 0.50 && TARGET === 2) TARGET = 1;
+    else if (s > 0.60) TARGET = 2;
+    else if (s > 0.18 && TARGET === 0) TARGET = 1;
     step();
   }
   function req() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
