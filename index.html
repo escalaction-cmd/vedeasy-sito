@@ -87,9 +87,9 @@ button, input { font: inherit; color: inherit; }
 .prevbar .linkbtn { font: inherit; letter-spacing: inherit; white-space: nowrap; }
 
 /* momento 1 e 2: il muro */
-.track { position: relative; height: 300vh; }
+.track { position: relative; height: 220vh; }
 .stage {
-  --p: 0; --q: 0; --band: 360px;
+  --band: 360px;
   position: sticky; top: 0;
   height: 100vh; height: 100svh;
   overflow: hidden;
@@ -99,13 +99,12 @@ button, input { font: inherit; color: inherit; }
 .wall {
   --w: 25vw; --g: 1.1vw; --tilt: -9deg;
   position: absolute; left: 50%;
-  top: calc((100% - var(--band)) / 2 + var(--band) / 2 * var(--p));
+  top: calc((100% - var(--band)) / 2);
   display: flex; flex-direction: column; gap: var(--g);
-  transform: translate(-50%, -50%) rotate(calc(var(--tilt) * (1 - var(--p)))) scale(calc(1.22 - .22 * var(--p)));
-  opacity: calc(1 - var(--q) * .9);
+  transform: translate(-50%, -50%) rotate(var(--tilt)) scale(1.22);
   will-change: transform, opacity;
 }
-.row { display: flex; gap: var(--g); width: max-content; transform: translateX(calc(var(--off, 0vw) + var(--par, 0px))); }
+.row { display: flex; gap: var(--g); width: max-content; transform: translateX(var(--off, 0vw)); }
 .row:nth-child(2) { --off: -12.5vw; }
 .row:nth-child(3) { --off: -4vw; }
 .tile {
@@ -130,17 +129,17 @@ button, input { font: inherit; color: inherit; }
   content: ""; position: absolute; inset: 0 0 auto 0; height: 120px; z-index: 2; pointer-events: none;
   background: linear-gradient(rgba(5,7,10,.85), rgba(5,7,10,0));
 }
-.stage::after {
-  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
-  background: var(--bg); opacity: calc(var(--p) * .55);
+.shade {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: var(--bg); opacity: 0;
 }
 .edge {
   position: absolute; left: 0; right: 0; bottom: 0; height: 22%; z-index: 1; pointer-events: none;
-  background: linear-gradient(rgba(5,7,10,0), var(--bg)); opacity: var(--p);
+  background: linear-gradient(rgba(5,7,10,0), var(--bg)); opacity: 0;
 }
 .line {
   position: absolute; inset: 0; z-index: 3; display: flex; align-items: center;
-  opacity: var(--q); transform: scale(calc(1.1 - .1 * var(--q)));
+  opacity: 0; transform: scale(1.1);
   pointer-events: none; will-change: transform, opacity;
 }
 .line .wrap { width: 100%; }
@@ -160,8 +159,6 @@ button, input { font: inherit; color: inherit; }
   position: absolute; z-index: 3; left: 0; right: 0; bottom: 0;
   padding-top: 72px; padding-bottom: clamp(24px, 5vh, 52px);
   background: linear-gradient(rgba(5,7,10,0), var(--bg) 72px);
-  opacity: max(0, calc(1 - var(--p) * 3));
-  transform: translateY(calc(var(--p) * 40px));
 }
 .hero-text h1 {
   margin: 0 0 clamp(16px, 2.6vh, 26px);
@@ -330,7 +327,7 @@ footer { border-top: 1px solid var(--line); padding-block: 30px calc(30px + 56px
   .row:nth-child(3) { --off: -6vw; }
 }
 @media (max-width: 760px) {
-  .track { height: 260vh; }
+  .track { height: 230vh; }
   .line-row { grid-template-columns: 1fr 1fr; gap: 34px 12px; }
   .line-row li:nth-child(n+3)::after { content: ""; position: absolute; left: -6px; right: -6px; top: -14px; height: 2px; background: var(--ribbon); z-index: -1; }
   .line-row::before { right: 0; }
@@ -377,8 +374,9 @@ footer { border-top: 1px solid var(--line); padding-block: 30px calc(30px + 56px
 <div class="track" id="track">
   <section class="stage" id="stage" aria-label="Apertura">
     <div class="wallbox"><div class="wall" id="wall"></div></div>
-    <div class="edge"></div>
-    <div class="line" aria-hidden="true">
+    <div class="shade" id="shade"></div>
+    <div class="edge" id="edge"></div>
+    <div class="line" id="lineBox" aria-hidden="true">
       <div class="wrap">
         <div class="eyebrow">Il metodo, in quattro passaggi</div>
         <ol class="line-row">
@@ -651,21 +649,35 @@ footer { border-top: 1px solid var(--line); padding-block: 30px calc(30px + 56px
     });
   }
   gate(lineVids, true);
-  function measure() { stage.style.setProperty('--band', Math.max(0, heroText.offsetHeight - 36) + 'px'); }
+  var band = 0, shade = $('shade'), edge = $('edge'), lineBox = $('lineBox');
+  function clamp(x) { return x < 0 ? 0 : x > 1 ? 1 : x; }
+  function measure() { band = Math.max(0, heroText.offsetHeight - 36); stage.style.setProperty('--band', band + 'px'); }
+  /* Tre tempi, uno dopo l'altro, così due cose non stanno mai insieme sullo schermo:
+     1) il muro si raddrizza (s da 0 a 0,40); 2) il muro sfuma e sparisce (0,40 a 0,52);
+     3) solo dopo compare la fila dei quattro passaggi (0,52 a 0,70), poi resta ferma.
+     Ogni elemento riceve i suoi valori direttamente: nessuna variabile condivisa che
+     obbliga il browser a ricalcolare tutta la pagina a ogni scatto della rotella. */
   function update() {
     ticking = false;
-    if (rm.matches) { stage.style.setProperty('--p', 0); stage.style.setProperty('--q', 0); return; }
+    if (rm.matches) return;
     var r = track.getBoundingClientRect();
     var range = Math.max(1, r.height - window.innerHeight);
-    var s = Math.min(1, Math.max(0, -r.top / range));
-    var p = Math.min(1, s / 0.42);
-    var q = Math.min(1, Math.max(0, (s - 0.48) / 0.32));
-    stage.style.setProperty('--p', p.toFixed(3));
-    stage.style.setProperty('--q', q.toFixed(3));
-    gate(lineVids, q < 0.02); gate(wallVids, q > 0.98);
-    wall.style.pointerEvents = q > 0.3 ? 'none' : '';
-    if ('inert' in wall) wall.inert = q > 0.3;
-    rows.forEach(function (row, i) { row.style.setProperty('--par', ((i % 2 ? 1 : -1) * s * 90).toFixed(1) + 'px'); });
+    var s = clamp(-r.top / range);
+    var p = clamp(s / 0.40), wo = 1 - clamp((s - 0.40) / 0.12), lo = clamp((s - 0.52) / 0.18);
+    wall.style.transform = 'translate(-50%, -50%) translateY(' + (band / 2 * p).toFixed(1) + 'px) rotate(' + (-9 * (1 - p)).toFixed(2) + 'deg) scale(' + (1.22 - 0.22 * p).toFixed(3) + ')';
+    wall.style.opacity = wo.toFixed(3);
+    wall.style.visibility = wo < 0.02 ? 'hidden' : '';
+    lineBox.style.opacity = lo.toFixed(3);
+    lineBox.style.transform = 'scale(' + (1.1 - 0.1 * lo).toFixed(3) + ')';
+    shade.style.opacity = (p * 0.55).toFixed(3);
+    edge.style.opacity = p.toFixed(3);
+    heroText.style.opacity = Math.max(0, 1 - p * 3).toFixed(3);
+    heroText.style.transform = 'translateY(' + (p * 40).toFixed(1) + 'px)';
+    gate(lineVids, lo < 0.02); gate(wallVids, wo < 0.02);
+    var off = wo < 0.7;
+    wall.style.pointerEvents = off ? 'none' : '';
+    if ('inert' in wall) wall.inert = off;
+    rows.forEach(function (row, i) { row.style.translate = ((i % 2 ? 1 : -1) * s * 90).toFixed(1) + 'px 0'; });
     var hide = p > 0.5;
     heroText.style.pointerEvents = hide ? 'none' : '';
     if ('inert' in heroText) heroText.inert = hide;
