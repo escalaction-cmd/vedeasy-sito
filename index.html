@@ -1,0 +1,817 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vedeasy. Method in motion.</title>
+<meta name="description" content="Questi video nascono da un metodo. Lo portiamo nel tuo team: un Brain per ogni reparto, un archivio che cresce a ogni lavoro approvato e un processo fisso.">
+<meta name="theme-color" content="#05070A">
+<link rel="canonical" href="https://vedeasy.com/">
+<link rel="icon" href="brand/svg/icona-sito.svg" type="image/svg+xml">
+<link rel="icon" href="brand/png/icona-sito-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="brand/png/icona-sito-180.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://vedeasy.com/">
+<meta property="og:title" content="Vedeasy. Method in motion.">
+<meta property="og:description" content="Questi video nascono da un metodo. Lo portiamo nel tuo team: un Brain per ogni reparto, un archivio che cresce a ogni lavoro approvato e un processo fisso.">
+<meta property="og:image" content="https://vedeasy.com/brand/anteprima-sito.png">
+<meta property="og:locale" content="it_IT">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="fonts/Sora300.ttf" as="font" type="font/ttf" crossorigin>
+<link rel="preload" href="fonts/Sora500.ttf" as="font" type="font/ttf" crossorigin>
+<style>
+@font-face{font-family:'Sora';font-weight:300;font-style:normal;font-display:swap;src:url(fonts/Sora300.ttf) format('truetype')}
+@font-face{font-family:'Sora';font-weight:500;font-style:normal;font-display:swap;src:url(fonts/Sora500.ttf) format('truetype')}
+@font-face{font-family:'IBM Plex Mono';font-weight:400;font-style:normal;font-display:swap;src:url(fonts/PlexMono400.ttf) format('truetype')}
+@font-face{font-family:'IBM Plex Mono';font-weight:500;font-style:normal;font-display:swap;src:url(fonts/PlexMono500.ttf) format('truetype')}
+/* Layout: muro di video inclinato sopra, fascia di testo piena sotto; il muro si raddrizza allo scroll, poi il metodo su un filo a quattro punti, poi tappe, modulo e piè di pagina. */
+:root {
+  --bg: #05070A;
+  --bg2: #0C1015;
+  --bg3: #11161D;
+  --ink: #F2F0EB;
+  --mute: #A5A9B0;
+  --line: rgba(242, 240, 235, .14);
+  --o: #EF764B;
+  --p: #EE5895;
+  --vl: #B06BC0;
+  --bl: #4FA9D6;
+  --err: #F59B7A;
+  --display: 'Sora', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --ribbon: linear-gradient(90deg, #EF764B, #EE5895, #833B8F, #2786B4);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 300 1rem/1.6 var(--display);
+  -webkit-font-smoothing: antialiased;
+}
+img { display: block; max-width: 100%; }
+button, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--bl); outline-offset: 3px; }
+.wrap {
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.eyebrow {
+  font: 500 .75rem/1.4 var(--mono);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+.linkbtn {
+  background: none; border: 0; padding: 0; cursor: pointer;
+  color: var(--ink); text-decoration: underline; text-underline-offset: 4px; text-decoration-color: rgba(242,240,235,.4);
+}
+.linkbtn:hover { text-decoration-color: var(--ink); }
+
+/* etichetta di anteprima, non fa parte della pagina */
+.prevbar {
+  position: fixed; z-index: 40;
+  right: max(12px, env(safe-area-inset-right, 0px));
+  top: max(12px, env(safe-area-inset-top, 0px));
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 14px; border-radius: 999px;
+  background: rgba(12, 16, 21, .92); border: 1px solid var(--line);
+  font: 400 .6875rem/1.4 var(--mono); letter-spacing: .05em; color: var(--mute);
+  backdrop-filter: blur(8px);
+}
+.prevbar .linkbtn { font: inherit; letter-spacing: inherit; white-space: nowrap; }
+
+/* momento 1 e 2: il muro */
+.track { position: relative; height: 300vh; }
+.stage {
+  --p: 0; --q: 0; --band: 360px;
+  position: sticky; top: 0;
+  height: 100vh; height: 100svh;
+  overflow: hidden;
+  background: var(--bg);
+}
+.wallbox { position: absolute; inset: 0; }
+.wall {
+  --w: 25vw; --g: 1.1vw; --tilt: -9deg;
+  position: absolute; left: 50%;
+  top: calc((100% - var(--band)) / 2 + var(--band) / 2 * var(--p));
+  display: flex; flex-direction: column; gap: var(--g);
+  transform: translate(-50%, -50%) rotate(calc(var(--tilt) * (1 - var(--p)))) scale(calc(1.22 - .22 * var(--p)));
+  opacity: calc(1 - var(--q) * .9);
+  will-change: transform, opacity;
+}
+.row { display: flex; gap: var(--g); width: max-content; transform: translateX(calc(var(--off, 0vw) + var(--par, 0px))); }
+.row:nth-child(2) { --off: -12.5vw; }
+.row:nth-child(3) { --off: -4vw; }
+.tile {
+  position: relative; flex: none;
+  width: 100%; aspect-ratio: 16 / 9;
+  padding: 0; border: 0; border-radius: 18px; overflow: hidden;
+  background: #10141B; cursor: pointer; display: block;
+}
+.wall .tile { width: var(--w); }
+.tile video { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .5s ease; }
+.tile:hover video { transform: scale(1.04); }
+.tile::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); pointer-events: none; }
+.seal { position: absolute; left: 8px; bottom: 8px; width: clamp(66px, 7vw, 100px); pointer-events: none; }
+.cue {
+  position: absolute; right: 8px; bottom: 8px;
+  font: 500 .6875rem/1 var(--mono); letter-spacing: .08em; text-transform: uppercase;
+  background: rgba(5,7,10,.72); padding: 7px 10px; border-radius: 99px;
+  opacity: 0; transition: opacity .25s;
+}
+.tile:hover .cue, .tile:focus-visible .cue { opacity: 1; }
+.stage::before {
+  content: ""; position: absolute; inset: 0 0 auto 0; height: 120px; z-index: 2; pointer-events: none;
+  background: linear-gradient(rgba(5,7,10,.85), rgba(5,7,10,0));
+}
+.stage::after {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: var(--bg); opacity: calc(var(--p) * .55);
+}
+.edge {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 22%; z-index: 1; pointer-events: none;
+  background: linear-gradient(rgba(5,7,10,0), var(--bg)); opacity: var(--p);
+}
+.line {
+  position: absolute; inset: 0; z-index: 3; display: flex; align-items: center;
+  opacity: var(--q); transform: scale(calc(1.1 - .1 * var(--q)));
+  pointer-events: none; will-change: transform, opacity;
+}
+.line .wrap { width: 100%; }
+.line .eyebrow { margin-bottom: clamp(26px, 4vh, 44px); }
+.line-row { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(10px, 1.6vw, 24px); margin: 0; padding: 0; list-style: none; }
+.line-row::before { content: ""; position: absolute; left: 0; right: 0; top: -14px; height: 2px; background: var(--ribbon); }
+.line-row li { position: relative; min-width: 0; }
+.line-row li::before { content: ""; position: absolute; left: 0; top: -22px; width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--c); background: var(--bg); box-sizing: border-box; }
+.line-row .lt { aspect-ratio: 16 / 9; border-radius: 16px; overflow: hidden; background: #10141B; box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+.line-row video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.line-row span { display: block; margin-top: 12px; font: 500 clamp(.625rem, 1vw, .8125rem)/1.35 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--c); }
+.top { position: absolute; z-index: 4; left: 0; right: 0; top: 0; padding-top: 22px; }
+.top img { height: 36px; width: auto; }
+
+/* fascia del testo: fondo pieno, il testo non sta mai sopra i video */
+.hero-text {
+  position: absolute; z-index: 3; left: 0; right: 0; bottom: 0;
+  padding-top: 72px; padding-bottom: clamp(24px, 5vh, 52px);
+  background: linear-gradient(rgba(5,7,10,0), var(--bg) 72px);
+  opacity: max(0, calc(1 - var(--p) * 3));
+  transform: translateY(calc(var(--p) * 40px));
+}
+.hero-text h1 {
+  margin: 0 0 clamp(16px, 2.6vh, 26px);
+  font-size: clamp(1.7rem, 3.5vw, 3.25rem);
+  line-height: 1.1; letter-spacing: -.02em; text-wrap: balance;
+}
+.hero-text h1 span { display: block; }
+.hero-text h1 .l1 { font-weight: 300; color: var(--ink); }
+.hero-text h1 .l2 { font-weight: 500; color: var(--ink); }
+.hero-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 20px clamp(24px, 5vw, 72px); align-items: end; }
+.hero-text p { margin: 0; max-width: 62ch; font-size: clamp(.95rem, 1.35vw, 1.1rem); color: #D3D1CC; text-wrap: pretty; }
+
+/* bottone a pillola con bordo a nastro */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 54px; padding: 0 30px; cursor: pointer;
+  border: 2px solid transparent; border-radius: 999px;
+  background: linear-gradient(var(--bg), var(--bg)) padding-box, var(--ribbon) border-box;
+  font: 500 1rem/1 var(--display); letter-spacing: .01em; color: var(--ink);
+  transition: box-shadow .3s, transform .2s;
+  white-space: nowrap;
+}
+a.btn { text-decoration: none; }
+.btn:hover { box-shadow: 0 0 0 6px rgba(238, 88, 149, .12), 0 8px 40px rgba(131, 59, 143, .35); transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+
+/* momento 2: il metodo */
+.method { padding-block: clamp(72px, 11vw, 150px) clamp(56px, 8vw, 110px); }
+.method h2, .closing h2 {
+  margin: 14px 0 0; font-weight: 300; letter-spacing: -.02em; line-height: 1.12;
+  font-size: clamp(1.75rem, 3.8vw, 3.1rem); max-width: 22ch; text-wrap: balance;
+}
+.brain { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: clamp(32px, 5vw, 56px); }
+.card { background: var(--bg2); border: 1px solid var(--line); border-radius: 22px; padding: clamp(22px, 3vw, 34px); min-width: 0; }
+.card .eyebrow { display: flex; align-items: center; gap: 10px; }
+.card .eyebrow i { width: 9px; height: 9px; border-radius: 50%; background: var(--c); }
+.card h3 { margin: 14px 0 8px; font-weight: 500; font-size: clamp(1.25rem, 2vw, 1.6rem); letter-spacing: -.01em; }
+.card p { margin: 0; color: var(--mute); max-width: 42ch; }
+.steps {
+  position: relative; display: grid; gap: clamp(52px, 8vw, 104px);
+  margin-top: clamp(40px, 6vw, 72px); padding-left: 48px;
+}
+.steps::before {
+  content: ""; position: absolute; left: 11px; top: -40px; bottom: 0; width: 2px;
+  background: linear-gradient(to bottom, #EF764B, #EE5895 35%, #833B8F 68%, #2786B4);
+}
+.step { position: relative; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 64px); align-items: start; }
+.step::before {
+  content: ""; position: absolute; left: -48px; top: 2px; width: 24px; height: 24px; border-radius: 50%;
+  border: 2px solid var(--c); background: var(--bg);
+}
+.step .media { border-radius: 18px; overflow: hidden; }
+.step .tile { border-radius: 14px; }
+.step h3 { margin: 12px 0 10px; font-weight: 500; font-size: clamp(1.4rem, 2.4vw, 2rem); letter-spacing: -.01em; line-height: 1.15; }
+.step p { margin: 0; color: var(--mute); font-size: 1.0625rem; max-width: 42ch; }
+.step .eyebrow { color: var(--c); }
+.cap { margin-top: 10px; font: 400 .75rem/1.5 var(--mono); letter-spacing: .04em; color: var(--mute); }
+
+/* momento 3: tappe, titolo e modulo */
+.closing {
+  padding-block: clamp(56px, 8vw, 104px) clamp(64px, 9vw, 120px);
+  background:
+    radial-gradient(40% 70% at 10% 90%, rgba(239,118,75,.14), transparent 70%),
+    radial-gradient(40% 70% at 92% 30%, rgba(39,134,180,.16), transparent 70%),
+    radial-gradient(35% 60% at 55% 0%, rgba(131,59,143,.14), transparent 70%),
+    var(--bg);
+}
+.tappe { margin-bottom: clamp(40px, 6vw, 72px); }
+.tappe .eyebrow { margin-bottom: 22px; }
+.filo { position: relative; height: 58px; }
+.filo::before { content: ""; position: absolute; left: 0; right: 0; top: 45px; height: 2px; background: var(--ribbon); }
+.filo i { position: absolute; top: 37px; width: 18px; height: 18px; margin-left: -9px; border-radius: 50%; border: 2px solid var(--c); background: var(--bg); }
+.filo b {
+  position: absolute; top: 0; transform: translateX(-50%); white-space: nowrap;
+  font: 500 clamp(.6875rem, 1.2vw, .9rem)/1.2 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--c);
+}
+.cgrid { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(32px, 6vw, 88px); align-items: start; }
+.closing p.sub { margin: 18px 0 0; font-size: clamp(1.05rem, 1.6vw, 1.3rem); color: #D3D1CC; max-width: 34ch; }
+.mailrow { margin-top: 32px; display: grid; gap: 10px; color: var(--mute); font-size: .9375rem; }
+.mailrow div { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
+.mailrow code { font: 500 .9375rem/1 var(--mono); padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg2); color: var(--ink); user-select: all; }
+.ghost { background: none; border: 1px solid var(--line); border-radius: 999px; padding: 10px 18px; cursor: pointer; min-height: 44px; transition: border-color .2s; }
+.ghost:hover { border-color: rgba(242,240,235,.4); }
+
+.form { background: var(--bg2); border: 1px solid var(--line); border-radius: 26px; padding: clamp(22px, 3.2vw, 38px); }
+.fields { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 16px; }
+.f { display: grid; gap: 7px; min-width: 0; }
+.f.full { grid-column: 1 / -1; }
+.f label { font: 500 .75rem/1.3 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--mute); }
+.f input {
+  width: 100%; min-height: 50px; padding: 0 16px; border-radius: 14px;
+  background: var(--bg); border: 1px solid var(--line); font-size: 1rem; font-weight: 300;
+  transition: border-color .2s, box-shadow .2s;
+}
+.f input:hover { border-color: rgba(242,240,235,.3); }
+.f input:focus { outline: none; border-color: var(--bl); box-shadow: 0 0 0 3px rgba(79,169,214,.25); }
+.f input[aria-invalid="true"] { border-color: var(--err); }
+.err { min-height: 1.1em; font-size: .8125rem; line-height: 1.3; color: var(--err); }
+.check { display: grid; grid-template-columns: 22px 1fr; gap: 12px; align-items: start; margin-top: 8px; color: #D3D1CC; font-size: .9375rem; }
+.check input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: #EE5895; }
+.form .actions { margin-top: 22px; display: flex; flex-wrap: wrap; gap: 14px 20px; align-items: center; }
+.form .hint { margin: 0; font-size: .875rem; color: var(--mute); max-width: 34ch; }
+.result h3 { margin: 0 0 8px; font-weight: 500; font-size: 1.5rem; }
+.result p { margin: 0 0 18px; color: #D3D1CC; }
+.result dl { margin: 0 0 22px; display: grid; grid-template-columns: max-content 1fr; gap: 8px 18px; font-size: .9375rem; }
+.result dt { font: 500 .75rem/1.9 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--mute); }
+.result dd { margin: 0; overflow-wrap: anywhere; white-space: pre-line; }
+.result .tag { display: inline-block; margin-bottom: 14px; font: 500 .6875rem/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; padding: 7px 10px; border-radius: 99px; border: 1px dashed rgba(242,240,235,.35); color: var(--mute); }
+
+footer { border-top: 1px solid var(--line); padding-block: 30px calc(30px + 56px); }
+.foot { display: flex; flex-direction: column; gap: 22px; }
+.foot-top, .foot-bottom { display: flex; align-items: center; justify-content: space-between; gap: 16px 40px; flex-wrap: wrap; }
+.foot-bottom { padding-top: 22px; border-top: 1px solid var(--line); }
+.foot-bottom .linkbtn { margin-left: auto; }
+.foot img { height: 38px; width: auto; }
+.legal { margin: 0; font-style: normal; font-size: .875rem; color: var(--mute); display: flex; flex-wrap: wrap; gap: 6px 26px; min-width: 0; }
+.foot .linkbtn { font-size: .875rem; color: var(--ink); }
+.social { display: flex; gap: 8px; }
+.social a { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 999px; color: var(--ink); border: 1px solid rgba(255,255,255,.22); transition: border-color .2s, background .2s; }
+.social a:hover { border-color: var(--ink); background: rgba(255,255,255,.06); }
+.social a:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+/* finestre: privacy e note per la revisione */
+.sheet {
+  position: fixed; inset: 0; z-index: 70; background: rgba(3, 4, 6, .82);
+  display: grid; place-items: center;
+  padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+}
+.panel {
+  width: min(760px, 100%); max-height: 100%; overflow: auto; overscroll-behavior: contain;
+  background: var(--bg2); border: 1px solid var(--line); border-radius: 24px;
+  padding: clamp(22px, 4vw, 44px);
+}
+.panel header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+.panel h2 { margin: 6px 0 0; font-weight: 500; font-size: clamp(1.4rem, 3vw, 1.9rem); letter-spacing: -.01em; }
+.panel h3 { margin: 26px 0 6px; font-weight: 500; font-size: 1.0625rem; }
+.panel p, .panel li { color: #D3D1CC; font-size: .9688rem; line-height: 1.65; }
+.panel p { margin: 0 0 10px; }
+.panel ul { margin: 0 0 10px; padding-left: 20px; }
+.panel li { margin-bottom: 6px; }
+.panel .close, .lb .close {
+  flex: none; min-height: 44px; min-width: 44px; padding: 0 18px; border-radius: 999px; cursor: pointer;
+  background: rgba(255,255,255,.08); border: 1px solid var(--line);
+  font: 500 .8125rem/1 var(--mono); letter-spacing: .08em; text-transform: uppercase;
+}
+.panel ol.notes { margin: 0; padding: 0; list-style: none; display: grid; gap: 14px; counter-reset: n; }
+.panel ol.notes li { counter-increment: n; display: grid; grid-template-columns: 26px 1fr; gap: 10px; }
+.panel ol.notes li::before { content: counter(n); font: 500 .8125rem/1.9 var(--mono); color: var(--bl); }
+.panel strong { font-weight: 500; color: var(--ink); }
+
+/* finestra con l'episodio intero */
+.lb {
+  position: fixed; inset: 0; z-index: 60; background: rgba(3, 4, 6, .95);
+  display: grid; place-items: center;
+  padding: max(56px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(24px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+}
+.lb video { width: min(1180px, 100%); max-height: 80vh; max-height: 80svh; background: #000; border-radius: 12px; }
+.lb .close { position: absolute; right: max(16px, env(safe-area-inset-right, 0px)); top: max(12px, env(safe-area-inset-top, 0px)); }
+
+@media (max-width: 900px) {
+  .cgrid { grid-template-columns: 1fr; }
+}
+@media (min-width: 761px) and (max-width: 1100px) {
+  .wall { --w: 38vw; --g: 1.8vw; }
+  .row:nth-child(2) { --off: -19vw; }
+  .row:nth-child(3) { --off: -6vw; }
+}
+@media (max-width: 760px) {
+  .track { height: 260vh; }
+  .line-row { grid-template-columns: 1fr 1fr; gap: 34px 12px; }
+  .line-row li:nth-child(n+3)::after { content: ""; position: absolute; left: -6px; right: -6px; top: -14px; height: 2px; background: var(--ribbon); z-index: -1; }
+  .line-row::before { right: 0; }
+  .wall { --w: 54vw; --g: 2.4vw; }
+  .row:nth-child(2) { --off: -27vw; }
+  .row:nth-child(3) { --off: -10vw; }
+  .top img { height: 30px; }
+  .hero-text { padding-top: 56px; padding-bottom: 22px; background: linear-gradient(rgba(5,7,10,0), var(--bg) 56px); }
+  .hero-row { grid-template-columns: 1fr; }
+  .hero-text .btn { width: 100%; }
+  .brain { grid-template-columns: 1fr; }
+  .step { grid-template-columns: 1fr; gap: 18px; }
+  .steps { padding-left: 40px; }
+  .steps::before { left: 8px; }
+  .step::before { left: -40px; width: 20px; height: 20px; }
+  .fields { grid-template-columns: 1fr; }
+  .form .btn { width: 100%; }
+  .foot-top, .foot-bottom { align-items: flex-start; }
+  .foot-bottom { flex-direction: column; gap: 16px; }
+  .foot-bottom .linkbtn { margin-left: 0; }
+}
+@media (max-width: 760px) and (max-height: 720px) {
+  .hero-text h1 { font-size: 1.45rem; margin-bottom: 12px; }
+  .hero-text p { font-size: .875rem; line-height: 1.5; }
+  .hero-text { padding-bottom: 16px; }
+  .hero-text .btn { min-height: 48px; }
+  .hero-row { gap: 14px; }
+}
+@media (max-width: 520px) {
+  .prevbar .pv { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .track { height: auto; }
+  .stage { position: relative; }
+  .line { display: none; }
+  .wall { --tilt: 0deg; transform: translate(-50%, -50%); }
+  .row { transform: translateX(var(--off, 0vw)); }
+  .tile video, .btn { transition: none; }
+}
+</style>
+</head>
+<body>
+<div class="track" id="track">
+  <section class="stage" id="stage" aria-label="Apertura">
+    <div class="wallbox"><div class="wall" id="wall"></div></div>
+    <div class="edge"></div>
+    <div class="line" aria-hidden="true">
+      <div class="wrap">
+        <div class="eyebrow">Il metodo, in quattro passaggi</div>
+        <ol class="line-row">
+          <li style="--c: var(--o)"><div class="lt"><video class="lazy" data-src="montaggi/metodo_1.mp4" poster="poster/metodo_1.jpg" muted loop playsinline preload="none" tabindex="-1"></video></div><span>1. Definizione narrativa</span></li>
+          <li style="--c: #EE5895"><div class="lt"><video class="lazy" data-src="montaggi/metodo_2.mp4" poster="poster/metodo_2.jpg" muted loop playsinline preload="none" tabindex="-1"></video></div><span>2. Costruzione visiva</span></li>
+          <li style="--c: var(--vl)"><div class="lt"><video class="lazy" data-src="montaggi/metodo_3.mp4" poster="poster/metodo_3.jpg" muted loop playsinline preload="none" tabindex="-1"></video></div><span>3. Sviluppo audiovisivo</span></li>
+          <li style="--c: var(--bl)"><div class="lt"><video class="lazy" data-src="montaggi/metodo_4.mp4" poster="poster/metodo_4.jpg" muted loop playsinline preload="none" tabindex="-1"></video></div><span>4. Controllo e finalizzazione</span></li>
+        </ol>
+      </div>
+    </div>
+    <header class="top"><div class="wrap"><img src="brand/svg/marchio-orizzontale-colore-su-scuro.svg" alt="Vedeasy AI GENERATED"></div></header>
+    <div class="hero-text" id="heroText">
+      <div class="wrap">
+        <h1><span class="l1">Questi video nascono da un metodo.</span><span class="l2">Lo portiamo nel tuo team.</span></h1>
+        <div class="hero-row">
+          <p>Un sistema con un Brain per ogni reparto, un archivio che cresce a ogni lavoro approvato e un processo fisso. I team che seguiamo lo usano dal giorno dopo, senza competenze tecniche.</p>
+          <button class="btn" type="button" data-contact>Portiamo il metodo da te</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<main>
+<section class="method" id="metodo">
+  <div class="wrap">
+    <div class="eyebrow">Il metodo</div>
+    <h2>Un Brain Creativo e un archivio che cresce. Sotto, il processo in quattro passaggi.</h2>
+
+    <div class="brain">
+      <div class="card" style="--c: var(--o)">
+        <div class="eyebrow"><i></i>Brain per reparto</div>
+        <h3>Brain Creativo</h3>
+        <p>La cabina di regia del reparto creativo. Tiene insieme personaggio, tono, struttura e coerenza.</p>
+      </div>
+      <div class="card" style="--c: var(--bl)">
+        <div class="eyebrow"><i></i>Archivio</div>
+        <h3>Un archivio che cresce</h3>
+        <p>Esempi, regole e decisioni già validate. A ogni lavoro approvato ne entra una in più.</p>
+      </div>
+    </div>
+
+    <div class="steps">
+      <article class="step" style="--c: var(--o)">
+        <div><div class="media"><span data-mont="1" data-ep="1"></span></div><div class="cap">I luoghi della storia, decisi prima di tutto il resto.</div></div>
+        <div>
+          <div class="eyebrow">Passaggio 1 di 4</div>
+          <h3>Definizione narrativa</h3>
+          <p>Prima si decide la storia. Il Brain trasforma il brief in una regia: personaggio, tono, struttura.</p>
+        </div>
+      </article>
+      <article class="step" style="--c: var(--p)">
+        <div>
+          <div class="media"><span data-mont="2" data-ep="3"></span></div>
+          <div class="cap">Lo stesso protagonista, in quattro luoghi diversi.</div>
+        </div>
+        <div>
+          <div class="eyebrow">Passaggio 2 di 4</div>
+          <h3>Costruzione visiva</h3>
+          <p>Poi si fissa l’aspetto. Le immagini chiave bloccano luoghi, luci e volto, così il protagonista resta lo stesso in ogni scena.</p>
+        </div>
+      </article>
+      <article class="step" style="--c: var(--vl)">
+        <div class="media"><span data-mont="3" data-ep="5"></span></div>
+        <div>
+          <div class="eyebrow">Passaggio 3 di 4</div>
+          <h3>Sviluppo audiovisivo</h3>
+          <p>Solo ora arrivano movimento, suono e montaggio, partendo da ciò che è già deciso.</p>
+        </div>
+      </article>
+      <article class="step" style="--c: var(--bl)">
+        <div class="media"><span data-mont="4" data-ep="4"></span></div>
+        <div>
+          <div class="eyebrow">Passaggio 4 di 4</div>
+          <h3>Controllo e finalizzazione</h3>
+          <p>Ogni lavoro passa da un controllo finale. Ciò che viene approvato entra nell’archivio, e il lavoro dopo parte da lì.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="closing" id="contatto">
+  <div class="wrap">
+    <div class="tappe">
+      <div class="eyebrow">Il percorso con noi, in quattro tappe</div>
+      <div class="filo">
+        <b style="left: 12.5%; --c: var(--o)">Esegui</b><i style="left: 12.5%; --c: var(--o)"></i>
+        <b style="left: 37.5%; --c: var(--p)">Espandi</b><i style="left: 37.5%; --c: var(--p)"></i>
+        <b style="left: 62.5%; --c: var(--vl)">Consolida</b><i style="left: 62.5%; --c: var(--vl)"></i>
+        <b style="left: 87.5%; --c: var(--bl)">Scala</b><i style="left: 87.5%; --c: var(--bl)"></i>
+      </div>
+    </div>
+
+    <div class="cgrid">
+      <div>
+        <h2>I tool cambiano. Il metodo resta.</h2>
+        <p class="sub">Lo portiamo nel tuo team, un reparto alla volta.</p>
+        <div class="mailrow">
+          <span>Preferisci scriverci?</span>
+          <div>
+            <code id="mail">info@vedeasy.com</code>
+            <button class="ghost" type="button" id="copy">Copia l’indirizzo</button>
+          </div>
+          <span id="copied" role="status"></span>
+        </div>
+      </div>
+
+      <div>
+        <form class="form" id="form" novalidate aria-label="Modulo di contatto">
+          <div class="fields">
+            <div class="f"><label for="f-nome">Nome</label><input id="f-nome" name="nome" type="text" autocomplete="given-name" required><div class="err" data-err="nome"></div></div>
+            <div class="f"><label for="f-cognome">Cognome</label><input id="f-cognome" name="cognome" type="text" autocomplete="family-name" required><div class="err" data-err="cognome"></div></div>
+            <div class="f full"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required><div class="err" data-err="email"></div></div>
+            <div class="f full"><label for="f-tel">Telefono</label><input id="f-tel" name="tel" type="tel" autocomplete="tel" inputmode="tel" required><div class="err" data-err="tel"></div></div>
+            <div class="f"><label for="f-prof">Ruolo</label><input id="f-prof" name="prof" type="text" autocomplete="organization-title" required><div class="err" data-err="prof"></div></div>
+            <div class="f"><label for="f-rag">Azienda</label><input id="f-rag" name="rag" type="text" autocomplete="organization" required><div class="err" data-err="rag"></div></div>
+          </div>
+          <label class="check"><input id="f-priv" type="checkbox" required><span>Ho letto l’informativa su <button type="button" class="linkbtn" data-sheet="privacy">privacy e cookie</button>.</span></label>
+          <div class="err" data-err="priv"></div>
+          <div class="actions">
+            <button class="btn" type="submit">Prenota la call di 30 minuti</button>
+          </div>
+        </form>
+
+        <div class="form result" id="result" hidden>
+          <h3>Ultimo passo: scegli l’orario.</h3>
+          <p>Abbiamo aperto la prenotazione su Cal.com con questi dati già scritti. Se non si è aperta, usa il bottone qui sotto.</p>
+          <dl id="resultData"></dl>
+          <div class="actions">
+            <a class="btn" id="calLink" href="#" target="_blank" rel="noopener noreferrer">Scegli l’orario su Cal.com</a>
+            <button class="ghost" type="button" id="edit">Modifica i dati</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div class="foot-top">
+      <img src="brand/svg/marchio-orizzontale-colore-su-scuro.svg" alt="Vedeasy AI GENERATED">
+      <nav class="social" aria-label="Social">
+      <a href="https://www.linkedin.com/company/vedeasy/" target="_blank" rel="noopener noreferrer" aria-label="Vedeasy su LinkedIn (si apre in una nuova scheda)">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 10.5V16M8 7.6v.1M12 16v-5.5M12 13c0-1.6 1-2.6 2.4-2.6S16.5 11.4 16.5 13V16"/></svg>
+      </a>
+      <a href="https://www.instagram.com/vedeasy.ai/" target="_blank" rel="noopener noreferrer" aria-label="Vedeasy su Instagram (si apre in una nuova scheda)">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4"/><path d="M17.2 6.8v.1"/></svg>
+      </a>
+    </nav>
+    </div>
+    <div class="foot-bottom">
+      <address class="legal">
+      <span>Vedeasy di Castronovo Giuseppe</span>
+      <span>Via Aosta n°4, 20155 Milano</span>
+      <span>C.F.: CSTGPP76D15G273A</span>
+      <span>P.IVA: 03124310842</span>
+      <span>info@vedeasy.com</span>
+    </address>
+      <button type="button" class="linkbtn" data-sheet="privacy">Privacy e cookie</button>
+    </div>
+  </div>
+</footer>
+
+<div class="sheet" id="sheet-privacy" role="dialog" aria-modal="true" aria-labelledby="t-privacy" hidden>
+  <div class="panel">
+    <header>
+      <div><div class="eyebrow">Informativa</div><h2 id="t-privacy">Privacy e cookie</h2></div>
+      <button class="close" type="button" data-close>Chiudi</button>
+    </header>
+    <p>Ultimo aggiornamento: 12 novembre 2026.</p>
+
+    <h3>1. Chi tratta i tuoi dati</h3>
+    <p>Il titolare del trattamento è Vedeasy di Castronovo Giuseppe, Via Aosta 4, 20155 Milano, C.F.: CSTGPP76D15G273A, P.IVA: 03124310842. Per qualsiasi domanda scrivi a info@vedeasy.com.</p>
+
+    <h3>2. Quali dati raccogliamo</h3>
+    <p>Raccogliamo dati personali solo quando ci scrivi dal modulo di contatto: nome, cognome, indirizzo email, numero di telefono, ruolo e azienda. Se poi prenoti una call, nella pagina di prenotazione puoi aggiungere altre informazioni, per esempio una nota.</p>
+    <p>Non c’è registrazione, non c’è newsletter e non raccogliamo dati di navigazione per fare statistiche o pubblicità. Come ogni sito, il server che ospita questa pagina registra in automatico alcuni dati tecnici delle visite, come indirizzo IP, data e ora, per tenere il sito sicuro e funzionante.</p>
+
+    <h3>3. Perché li usiamo e su quale base</h3>
+    <ul>
+      <li>Per rispondere alla tua richiesta e fissare la call. La base giuridica è la richiesta che ci fai, cioè le misure precontrattuali (art. 6, paragrafo 1, lettera b del Regolamento UE 2016/679).</li>
+      <li>Per la sicurezza e il funzionamento del sito, con i dati tecnici del server. La base giuridica è il nostro legittimo interesse (art. 6, paragrafo 1, lettera f).</li>
+    </ul>
+    <p>Non usiamo i tuoi dati per inviarti pubblicità e non li usiamo per profilarti. Non li vendiamo.</p>
+
+    <h3>4. La prenotazione su Cal.com</h3>
+    <p>Le call si prenotano su Cal.com, un servizio esterno. Quando premi il bottone di prenotazione passi alla pagina di Cal.com, dove il nome, l’email e le note che hai scritto nel modulo arrivano già compilati. Da quel momento i dati che inserisci nella prenotazione sono trattati anche da Cal.com, per fissare l’appuntamento e mandarti la conferma, secondo la sua informativa.</p>
+
+    <h3>5. Chi può vedere i dati</h3>
+    <p>Li vediamo noi. Ci aiutano alcuni fornitori: chi ospita questa pagina e la posta elettronica di Vedeasy, e Cal.com per le prenotazioni. Non comunichiamo i dati ad altri, salvo obblighi di legge.</p>
+
+    <h3>6. Per quanto tempo li conserviamo</h3>
+    <p>Per il tempo necessario a rispondere e a gestire la tua richiesta. Se non nasce un rapporto di lavoro, li cancelliamo entro 12 mesi. Se nasce un rapporto, li teniamo per tutta la sua durata e per i tempi che la legge richiede per gli obblighi fiscali e contabili. I dati tecnici del server si conservano per un periodo breve, stabilito dal fornitore di hosting.</p>
+
+    <h3>7. I tuoi diritti</h3>
+    <p>Puoi chiederci in ogni momento di accedere ai tuoi dati, correggerli, cancellarli, limitarne l’uso, opporti al trattamento o riceverli in un formato leggibile (dall’art. 15 all’art. 22 del Regolamento). Scrivi a info@vedeasy.com. Se pensi che i tuoi diritti non siano rispettati puoi fare reclamo al Garante per la protezione dei dati personali (garanteprivacy.it).</p>
+
+    <h3>8. Cookie</h3>
+    <p>Questa pagina non usa cookie di profilazione, non usa cookie per le statistiche e non carica strumenti di terze parti per misurare le visite o fare pubblicità. Non ci sono Google Analytics, Google Tag Manager, pixel di Meta o remarketing.</p>
+    <p>I caratteri e i video sono ospitati da noi, sulla stessa pagina, senza chiamare servizi esterni. Per questo non c’è un banner dei cookie: non c’è nulla da accettare o rifiutare. Possono essere usati solo strumenti tecnici necessari al funzionamento della pagina, che non richiedono consenso.</p>
+    <p>Quando passi alla pagina di Cal.com, quel servizio può usare i propri cookie: i dettagli sono nella sua informativa.</p>
+
+    <h3>9. Modifiche</h3>
+    <p>Se cambia qualcosa, per esempio se aggiungiamo uno strumento di statistiche, aggiorniamo questa pagina e la data in alto.</p>
+  </div>
+</div>
+
+
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Episodio completo" hidden>
+  <button class="close" type="button" id="lbClose">Chiudi</button>
+  <video id="lbVideo" controls playsinline preload="none"></video>
+</div>
+
+<script>
+(function () {
+  var EP = { a: 1, b: 1, e: 2, f: 2, g: 2, i: 3, j: 3, k: 3, l: 3, m: 4, n: 4, o: 4, p: 5, q: 5, r: 6 };
+  var ROWS = [['a', 'e', 'i', 'm', 'p'], ['b', 'f', 'j', 'n', 'q'], ['r', 'g', 'k', 'o', 'l']];
+  var rm = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var $ = function (id) { return document.getElementById(id); };
+
+  function makeTile(id, ep) {
+    var name = ep ? 'montaggi/metodo_' + id : 'clip/clip_' + id;
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'tile'; b.dataset.ep = ep || EP[id];
+    b.setAttribute('aria-label', 'Guarda l’episodio completo');
+    b.innerHTML = '<video class="lazy" data-src="' + name + '.mp4" poster="poster/' + name.split('/')[1] + '.jpg" muted loop playsinline preload="none" tabindex="-1" aria-hidden="true"></video>' +
+      '<img class="seal" src="brand/svg/sigillo-ai-generated.svg" alt="">' +
+      '<span class="cue">Episodio intero</span>';
+    b.querySelector('video').muted = true;
+    return b;
+  }
+
+  var wall = $('wall');
+  ROWS.forEach(function (ids) {
+    var r = document.createElement('div'); r.className = 'row';
+    ids.forEach(function (id) { r.appendChild(makeTile(id)); });
+    wall.appendChild(r);
+  });
+  document.querySelectorAll('[data-mont]').forEach(function (s) { s.replaceWith(makeTile(s.dataset.mont, s.dataset.ep)); });
+
+  /* parte solo ciò che si vede */
+  var io = 'IntersectionObserver' in window ? new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      var v = e.target;
+      v._vis = e.isIntersecting;
+      if (e.isIntersecting) {
+        if (!v.src) { v.src = v.dataset.src; }
+        if (v._off) return;
+        if (!rm.matches) { var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); }
+        else { v.preload = 'metadata'; }
+      } else { v.pause(); }
+    });
+  }, { rootMargin: '120px', threshold: 0.05 }) : null;
+  document.querySelectorAll('video.lazy').forEach(function (v) { if (io) io.observe(v); });
+
+  /* il muro si raddrizza scorrendo; la fascia del testo misura se stessa */
+  var track = $('track'), stage = $('stage'), heroText = $('heroText');
+  var rows = [].slice.call(document.querySelectorAll('.row'));
+  var ticking = false;
+  var lineVids = [].slice.call(document.querySelectorAll('.line video')), wallVids = [].slice.call(wall.querySelectorAll('video'));
+  function gate(list, off) {
+    list.forEach(function (v) {
+      if (v._off === off) return;
+      v._off = off;
+      if (off) v.pause(); else if (v._vis && v.src && !rm.matches) { var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); }
+    });
+  }
+  gate(lineVids, true);
+  function measure() { stage.style.setProperty('--band', Math.max(0, heroText.offsetHeight - 36) + 'px'); }
+  function update() {
+    ticking = false;
+    if (rm.matches) { stage.style.setProperty('--p', 0); stage.style.setProperty('--q', 0); return; }
+    var r = track.getBoundingClientRect();
+    var range = Math.max(1, r.height - window.innerHeight);
+    var s = Math.min(1, Math.max(0, -r.top / range));
+    var p = Math.min(1, s / 0.42);
+    var q = Math.min(1, Math.max(0, (s - 0.48) / 0.32));
+    stage.style.setProperty('--p', p.toFixed(3));
+    stage.style.setProperty('--q', q.toFixed(3));
+    gate(lineVids, q < 0.02); gate(wallVids, q > 0.98);
+    wall.style.pointerEvents = q > 0.3 ? 'none' : '';
+    if ('inert' in wall) wall.inert = q > 0.3;
+    rows.forEach(function (row, i) { row.style.setProperty('--par', ((i % 2 ? 1 : -1) * s * 90).toFixed(1) + 'px'); });
+    var hide = p > 0.5;
+    heroText.style.pointerEvents = hide ? 'none' : '';
+    if ('inert' in heroText) heroText.inert = hide;
+  }
+  function req() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
+  window.addEventListener('scroll', req, { passive: true });
+  window.addEventListener('resize', function () { measure(); req(); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+  measure(); update();
+
+  /* episodio intero */
+  var lb = $('lb'), lbv = $('lbVideo'), lbFocus = null;
+  function openEp(n) {
+    lbFocus = document.activeElement;
+    lbv.src = 'web/episodio_' + n + '.mp4';
+    lb.hidden = false;
+    $('lbClose').focus();
+    var pr = lbv.play(); if (pr && pr.catch) pr.catch(function () {});
+  }
+  function closeEp() {
+    lbv.pause(); lbv.removeAttribute('src'); lbv.load();
+    lb.hidden = true;
+    if (lbFocus && lbFocus.focus) lbFocus.focus();
+  }
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest ? e.target.closest('.tile') : null;
+    if (t && t.dataset.ep) openEp(t.dataset.ep);
+  });
+  $('lbClose').addEventListener('click', closeEp);
+  lb.addEventListener('click', function (e) { if (e.target === lb) closeEp(); });
+
+  /* finestre privacy e note */
+  var sheetFocus = null, openSheetEl = null;
+  function showSheet(id, fromHash) {
+    var el = $('sheet-' + id); if (!el) return;
+    if (openSheetEl && openSheetEl !== el) openSheetEl.hidden = true;
+    if (!openSheetEl) sheetFocus = document.activeElement;
+    el.hidden = false; openSheetEl = el;
+    document.body.style.overflow = 'hidden';
+    var c = el.querySelector('[data-close]'); if (c) c.focus();
+    if (!fromHash) { try { history.replaceState(null, '', '#' + id); } catch (x) {} }
+  }
+  function hideSheet() {
+    if (!openSheetEl) return;
+    openSheetEl.hidden = true; openSheetEl = null;
+    document.body.style.overflow = '';
+    try { history.replaceState(null, '', location.pathname + location.search); } catch (x) {}
+    if (sheetFocus && sheetFocus.focus) sheetFocus.focus();
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('[data-sheet]') : null;
+    if (b) { showSheet(b.dataset.sheet); return; }
+    if (e.target.closest && e.target.closest('[data-close]')) { hideSheet(); return; }
+    if (e.target.classList && e.target.classList.contains('sheet')) hideSheet();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    if (!lb.hidden) closeEp(); else hideSheet();
+  });
+  function fromHash() {
+    var h = location.hash.replace('#', '');
+    if (h === 'privacy' || h === 'note') showSheet(h, true);
+    else if (openSheetEl) { openSheetEl.hidden = true; openSheetEl = null; document.body.style.overflow = ''; }
+  }
+  window.addEventListener('hashchange', fromHash);
+  fromHash();
+
+  /* bottone in alto: porta al modulo */
+  document.querySelectorAll('[data-contact]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      $('contatto').scrollIntoView({ behavior: rm.matches ? 'auto' : 'smooth', block: 'start' });
+      setTimeout(function () { var f = $('f-nome'); if (f && !$('form').hidden) f.focus({ preventScroll: true }); }, rm.matches ? 0 : 700);
+    });
+  });
+
+  /* copia indirizzo */
+  $('copy').addEventListener('click', function () {
+    var txt = $('mail').textContent, out = $('copied');
+    function sel() {
+      var rg = document.createRange(); rg.selectNodeContents($('mail'));
+      var sl = window.getSelection(); sl.removeAllRanges(); sl.addRange(rg);
+      out.textContent = 'Indirizzo selezionato: copialo con Ctrl+C o Cmd+C.';
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(function () { out.textContent = 'Indirizzo copiato.'; }, sel);
+    } else { sel(); }
+  });
+
+  /* modulo: controlla i campi e prepara i dati per Cal.com */
+  var form = $('form'), result = $('result');
+  var CAL = 'https://cal.com/giuseppe-castronovo-ncbsfy/30min';
+  var MSG = {
+    nome: 'Scrivi il tuo nome.',
+    cognome: 'Scrivi il tuo cognome.',
+    email: 'Scrivi un indirizzo email valido.',
+    tel: 'Scrivi il tuo numero di telefono.',
+    prof: 'Scrivi il tuo ruolo.',
+    rag: 'Scrivi il nome della tua azienda.',
+    priv: 'Spunta la casella per continuare.'
+  };
+  function setErr(key, on) {
+    var el = form.querySelector('[data-err="' + key + '"]');
+    var input = key === 'priv' ? $('f-priv') : $('f-' + key);
+    if (el) el.textContent = on ? MSG[key] : '';
+    if (input) { if (on) input.setAttribute('aria-invalid', 'true'); else input.removeAttribute('aria-invalid'); }
+    return on;
+  }
+  form.addEventListener('input', function (e) { var n = e.target.name; if (MSG[n]) setErr(n, false); });
+  $('f-priv').addEventListener('change', function () { setErr('priv', false); });
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var v = {
+      nome: $('f-nome').value.trim(), cognome: $('f-cognome').value.trim(), email: $('f-email').value.trim(),
+      tel: $('f-tel').value.trim(), prof: $('f-prof').value.trim(), rag: $('f-rag').value.trim()
+    };
+    var bad = [
+      setErr('nome', !v.nome),
+      setErr('cognome', !v.cognome),
+      setErr('email', !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.email)),
+      setErr('tel', v.tel.replace(/\D/g, '').length < 6),
+      setErr('prof', !v.prof),
+      setErr('rag', !v.rag),
+      setErr('priv', !$('f-priv').checked)
+    ];
+    if (bad.indexOf(true) !== -1) {
+      var first = form.querySelector('[aria-invalid="true"]'); if (first) first.focus();
+      return;
+    }
+    var notes = [];
+    notes.push('Telefono: ' + v.tel);
+    notes.push('Ruolo: ' + v.prof);
+    notes.push('Azienda: ' + v.rag);
+    var dl = $('resultData'); dl.innerHTML = '';
+    [['Nome', v.nome + ' ' + v.cognome], ['Email', v.email], ['Note', notes.length ? notes.join('\n') : 'nessuna']].forEach(function (r) {
+      var dt = document.createElement('dt'); dt.textContent = r[0];
+      var dd = document.createElement('dd'); dd.textContent = r[1];
+      dl.appendChild(dt); dl.appendChild(dd);
+    });
+    var cal = CAL + '?name=' + encodeURIComponent(v.nome + ' ' + v.cognome) + '&email=' + encodeURIComponent(v.email) + '&notes=' + encodeURIComponent(notes.join('\n'));
+    $('calLink').href = cal;
+    form.hidden = true; result.hidden = false;
+    try { window.open(cal, '_blank', 'noopener'); } catch (err) {}
+    result.querySelector('h3').setAttribute('tabindex', '-1'); result.querySelector('h3').focus();
+  });
+  $('edit').addEventListener('click', function () { result.hidden = true; form.hidden = false; $('f-nome').focus(); });
+})();
+</script>
+</body>
+</html>
