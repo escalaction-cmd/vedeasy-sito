@@ -4,8 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Vedeasy. Method in motion.</title>
-<meta name="description" content="Questi video nascono da un metodo. Lo portiamo nel tuo team: un Brain per ogni reparto, un archivio che cresce a ogni lavoro approvato e un processo fisso.">
+<meta name="description" content="Questi video nascono da un metodo. Lo portiamo nel tuo team: un sistema AI con un archivio che cresce a ogni lavoro approvato e un processo fisso.">
 <meta name="theme-color" content="#05070A">
+<meta name="format-detection" content="telephone=no">
 <link rel="canonical" href="https://vedeasy.com/">
 <link rel="icon" href="brand/svg/icona-sito.svg" type="image/svg+xml">
 <link rel="icon" href="brand/png/icona-sito-32.png" sizes="32x32" type="image/png">
@@ -13,7 +14,7 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://vedeasy.com/">
 <meta property="og:title" content="Vedeasy. Method in motion.">
-<meta property="og:description" content="Questi video nascono da un metodo. Lo portiamo nel tuo team: un Brain per ogni reparto, un archivio che cresce a ogni lavoro approvato e un processo fisso.">
+<meta property="og:description" content="Questi video nascono da un metodo. Lo portiamo nel tuo team: un sistema AI con un archivio che cresce a ogni lavoro approvato e un processo fisso.">
 <meta property="og:image" content="https://vedeasy.com/brand/anteprima-sito.png">
 <meta property="og:locale" content="it_IT">
 <meta name="twitter:card" content="summary_large_image">
@@ -44,7 +45,7 @@
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 body {
   margin: 0;
   background: var(--bg);
@@ -200,6 +201,11 @@ a.btn { text-decoration: none; }
 .btn:hover { box-shadow: 0 0 0 6px rgba(238, 88, 149, .12), 0 8px 40px rgba(131, 59, 143, .35); transform: translateY(-1px); }
 .btn:active { transform: translateY(0); }
 
+/* la pellicola: colonna di fotogrammi verticali, bordi forati, numeri in mono (per ora solo telefono) */
+.film { display: none; }
+.fmeta { display: flex; justify-content: space-between; gap: 12px; padding: 7px 2px 0; font: 500 .625rem/1.2 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--mute); }
+.fmeta b { font-weight: 500; color: var(--c, var(--ink)); }
+
 /* momento 2: il metodo */
 .method { padding-block: clamp(72px, 11vw, 150px) clamp(56px, 8vw, 110px); }
 .method h2, .closing h2 {
@@ -243,13 +249,11 @@ a.btn { text-decoration: none; }
 }
 .tappe { margin-bottom: clamp(40px, 6vw, 72px); }
 .tappe .eyebrow { margin-bottom: 22px; }
-.filo { position: relative; height: 58px; }
-.filo::before { content: ""; position: absolute; left: 0; right: 0; top: 45px; height: 2px; background: var(--ribbon); }
-.filo i { position: absolute; top: 37px; width: 18px; height: 18px; margin-left: -9px; border-radius: 50%; border: 2px solid var(--c); background: var(--bg); }
-.filo b {
-  position: absolute; top: 0; transform: translateX(-50%); white-space: nowrap;
-  font: 500 clamp(.6875rem, 1.2vw, .9rem)/1.2 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--c);
-}
+.tlist { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 clamp(12px, 2vw, 28px); }
+.tlist li { position: relative; padding: 16px 0 0; border-top: 1px solid var(--line); min-width: 0; }
+.tlist li::before { content: ""; position: absolute; left: 0; top: -1px; width: 28px; height: 2px; background: var(--c); }
+.tlist .n { display: block; font: 500 .75rem/1 var(--mono); letter-spacing: .1em; color: var(--c); }
+.tlist b { display: block; margin-top: 10px; font: 500 clamp(1.05rem, 1.9vw, 1.5rem)/1.15 var(--display); letter-spacing: -.01em; color: var(--ink); }
 .cgrid { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(32px, 6vw, 88px); align-items: start; }
 .closing p.sub { margin: 18px 0 0; font-size: clamp(1.05rem, 1.6vw, 1.3rem); color: #D3D1CC; max-width: 34ch; }
 .mailrow { margin-top: 32px; display: grid; gap: 10px; color: var(--mute); font-size: .9375rem; }
@@ -355,10 +359,52 @@ footer { border-top: 1px solid var(--line); padding-block: 30px calc(30px + 56px
   .hero-row { grid-template-columns: 1fr; }
   .hero-text .btn { width: 100%; }
   .brain { grid-template-columns: 1fr; }
-  .step { grid-template-columns: 1fr; gap: 18px; }
-  .steps { padding-left: 40px; }
-  .steps::before { left: 8px; }
-  .step::before { left: -40px; width: 20px; height: 20px; }
+  /* apertura a schermo intero, senza scena a tempo: poi si scorre la pellicola */
+  .track { height: auto; }
+  .stage { position: relative; }
+  .line { display: none; }
+  /* striscia di pellicola: fori ai lati, filo a nastro a sinistra */
+  .strip {
+    --gut: 34px;
+    position: relative; list-style: none; margin: 0; padding: 20px var(--gut);
+    background:
+      repeating-linear-gradient(to bottom, transparent 0 10px, rgba(242,240,235,.17) 10px 19px, transparent 19px 30px) 12px 0 / 9px 100% no-repeat,
+      repeating-linear-gradient(to bottom, transparent 0 10px, rgba(242,240,235,.17) 10px 19px, transparent 19px 30px) calc(100% - 12px) 0 / 9px 100% no-repeat,
+      #080B10;
+    border-block: 1px solid var(--line);
+  }
+  .strip::before, .strip::after { content: ""; position: absolute; top: 0; bottom: 0; width: 1px; background: var(--line); }
+  .strip::before { left: calc(var(--gut) - 6px); width: 2px; background: linear-gradient(to bottom, #EF764B, #EE5895 35%, #833B8F 68%, #2786B4); }
+  .strip::after { right: calc(var(--gut) - 6px); }
+  .film { display: block; padding: 44px 0 8px; }
+  .film .eyebrow { margin-bottom: 16px; }
+  .reel { display: grid; gap: 16px; }
+  .frame { min-width: 0; transition: opacity .45s ease; }
+  .reel.dim .frame { opacity: .38; }
+  .reel.dim .frame.on { opacity: 1; }
+  .frame .tile, .steps .tile { border-radius: 8px; }
+  .frame .tile { aspect-ratio: 4 / 5; }
+  .frame .seal, .steps .seal { width: 74px; }
+  /* i quattro passaggi: stessa pellicola, un fotogramma per passaggio con il testo sotto */
+  .method { padding-block: 52px 44px; }
+  .method h2, .closing h2 { font-size: 1.5rem; }
+  .card h3 { font-size: 1.15rem; margin: 12px 0 6px; }
+  .card p, .step p { font-size: .9375rem; }
+  .steps { margin: 36px -16px 0; padding: 20px var(--gut) 28px; gap: 34px; }
+  .steps::before { top: 0; }
+  .step { grid-template-columns: 1fr; gap: 12px; }
+  .step::before { display: none; }
+  .step .media { border-radius: 8px; }
+  .step .media .tile { aspect-ratio: 4 / 3; }
+  .step h3 { font-size: 1.2rem; margin: 8px 0 6px; }
+  .cap { margin-top: 7px; font-size: .6875rem; }
+  .closing { padding-block: 48px 56px; }
+  .closing p.sub { font-size: 1rem; margin-top: 12px; }
+  .tappe { margin-bottom: 40px; }
+  .tlist { grid-template-columns: 1fr 1fr; gap: 22px 16px; }
+  .tlist b { font-size: 1.1rem; margin-top: 8px; }
+  .mailrow { margin-top: 24px; }
+  .mailrow code { font-size: .875rem; }
   .fields { grid-template-columns: 1fr; }
   .form .btn { width: 100%; }
   .foot-top, .foot-bottom { align-items: flex-start; }
@@ -408,7 +454,7 @@ footer { border-top: 1px solid var(--line); padding-block: 30px calc(30px + 56px
       <div class="wrap">
         <h1><span class="l1">Questi video nascono da un metodo.</span><span class="l2">Lo portiamo nel tuo team.</span></h1>
         <div class="hero-row">
-          <p>Un sistema con un Brain per ogni reparto, un archivio che cresce a ogni lavoro approvato e un processo fisso. I team che seguiamo lo usano dal giorno dopo, senza competenze tecniche.</p>
+          <p>Un sistema AI con un archivio che cresce a ogni lavoro approvato e un processo fisso. I team che seguiamo lo usano dal giorno dopo, senza competenze tecniche.</p>
           <button class="btn" type="button" data-contact>Portiamo il metodo da te</button>
         </div>
       </div>
@@ -417,14 +463,19 @@ footer { border-top: 1px solid var(--line); padding-block: 30px calc(30px + 56px
 </div>
 
 <main>
+<section class="film" id="film" aria-label="I video della miniserie">
+  <div class="wrap"><div class="eyebrow">Sei episodi, un solo protagonista</div></div>
+  <ol class="reel strip" id="reel"></ol>
+</section>
+
 <section class="method" id="metodo">
   <div class="wrap">
     <div class="eyebrow">Il metodo</div>
-    <h2>Un Brain Creativo e un archivio che cresce. Sotto, il processo in quattro passaggi.</h2>
+    <h2>Un sistema che cresce a ogni lavoro approvato. Sotto, il processo in quattro passaggi.</h2>
 
     <div class="brain">
       <div class="card" style="--c: var(--o)">
-        <div class="eyebrow"><i></i>Brain per reparto</div>
+        <div class="eyebrow"><i></i>Reparto creativo</div>
         <h3>Brain Creativo</h3>
         <p>La cabina di regia del reparto creativo. Tiene insieme personaggio, tono, struttura e coerenza.</p>
       </div>
@@ -435,13 +486,13 @@ footer { border-top: 1px solid var(--line); padding-block: 30px calc(30px + 56px
       </div>
     </div>
 
-    <div class="steps">
+    <div class="steps strip">
       <article class="step" style="--c: var(--o)">
         <div><div class="media"><span data-mont="1" data-ep="1"></span></div><div class="cap">I luoghi della storia, decisi prima di tutto il resto.</div></div>
         <div>
           <div class="eyebrow">Passaggio 1 di 4</div>
           <h3>Definizione narrativa</h3>
-          <p>Prima si decide la storia. Il Brain trasforma il brief in una regia: personaggio, tono, struttura.</p>
+          <p>Prima si decide la storia. Il Brain Creativo trasforma il brief in una regia: personaggio, tono, struttura.</p>
         </div>
       </article>
       <article class="step" style="--c: var(--p)">
@@ -479,12 +530,12 @@ footer { border-top: 1px solid var(--line); padding-block: 30px calc(30px + 56px
   <div class="wrap">
     <div class="tappe">
       <div class="eyebrow">Il percorso con noi, in quattro tappe</div>
-      <div class="filo">
-        <b style="left: 12.5%; --c: var(--o)">Esegui</b><i style="left: 12.5%; --c: var(--o)"></i>
-        <b style="left: 37.5%; --c: var(--p)">Espandi</b><i style="left: 37.5%; --c: var(--p)"></i>
-        <b style="left: 62.5%; --c: var(--vl)">Consolida</b><i style="left: 62.5%; --c: var(--vl)"></i>
-        <b style="left: 87.5%; --c: var(--bl)">Scala</b><i style="left: 87.5%; --c: var(--bl)"></i>
-      </div>
+      <ol class="tlist">
+        <li style="--c: var(--o)"><span class="n">01</span><b>Esegui</b></li>
+        <li style="--c: var(--p)"><span class="n">02</span><b>Espandi</b></li>
+        <li style="--c: var(--vl)"><span class="n">03</span><b>Consolida</b></li>
+        <li style="--c: var(--bl)"><span class="n">04</span><b>Scala</b></li>
+      </ol>
     </div>
 
     <div class="cgrid">
@@ -626,6 +677,28 @@ footer { border-top: 1px solid var(--line); padding-block: 30px calc(30px + 56px
     ids.forEach(function (id) { r.appendChild(makeTile(id)); });
     wall.appendChild(r);
   });
+  /* la pellicola: nove fotogrammi scelti e ordinati come una storia; POS sposta il taglio verticale dove sta il soggetto */
+  var REEL = ['a', 'b', 'j', 'k', 'f', 'g', 'p', 'o', 'r'], POS = { j: '74%', r: '80%', k: '38%', g: '62%' };
+  var reel = $('reel');
+  REEL.forEach(function (id, i) {
+    var li = document.createElement('li'); li.className = 'frame';
+    var t = makeTile(id);
+    if (POS[id]) t.querySelector('video').style.objectPosition = POS[id] + ' 50%';
+    li.appendChild(t);
+    var n = (i + 1 < 10 ? '0' : '') + (i + 1);
+    var m = document.createElement('div'); m.className = 'fmeta'; m.setAttribute('aria-hidden', 'true');
+    m.innerHTML = '<span>F ' + n + ' / 0' + REEL.length + '</span><span>Episodio ' + EP[id] + '</span>';
+    li.appendChild(m);
+    reel.appendChild(li);
+  });
+  if ('IntersectionObserver' in window) {
+    reel.classList.add('dim');
+    var fo = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { e.target.classList.toggle('on', e.isIntersecting); });
+    }, { rootMargin: '-30% 0px -30% 0px', threshold: 0 });
+    [].forEach.call(reel.children, function (li) { fo.observe(li); });
+  }
+
   document.querySelectorAll('[data-mont]').forEach(function (s) { s.replaceWith(makeTile(s.dataset.mont, s.dataset.ep)); });
 
   /* parte solo ciò che si vede */
@@ -695,11 +768,13 @@ footer { border-top: 1px solid var(--line); padding-block: 30px calc(30px + 56px
   /* Cancello, una volta sola: se uno scorre così forte da uscire dal tratto fisso prima che
      muro dritto e fila siano stati mostrati, la pagina lo riporta in fondo al tratto e aspetta
      che la scena sia stata vista. Poi non succede più (anche se risale o riscorre). */
-  var seen = false, prevS = null, seenTimer = 0;
+  var seen = false, prevS = null, seenTimer = 0, small = window.matchMedia('(max-width: 760px)');
   function markSeen() { seen = true; clearTimeout(seenTimer); }
   function update() {
     ticking = false;
     if (rm.matches) { seen = true; return; }
+    /* sul telefono la scena resta sul muro inclinato e si scorre normalmente verso la pellicola */
+    if (small.matches) { seen = true; clearTimeout(tmr); locked = false; needMove = false; TARGET = 0; if (STATE !== 0) setState(0); return; }
     /* dopo la pausa del muro dritto, la fila arriva solo quando la persona scorre di nuovo */
     if (needMove && performance.now() >= lockEnd) needMove = false;
     var r = track.getBoundingClientRect();
