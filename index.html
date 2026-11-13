@@ -88,10 +88,10 @@ button, input { font: inherit; color: inherit; }
 .prevbar .linkbtn { font: inherit; letter-spacing: inherit; white-space: nowrap; }
 
 /* momento 1 e 2: il muro */
-.track { position: relative; height: 340vh; }
+.track { position: relative; }
 .stage {
   --band: 360px;
-  position: sticky; top: 0;
+  position: relative;
   height: 100vh; height: 100svh;
   overflow: hidden;
   background: var(--bg);
@@ -140,6 +140,7 @@ button, input { font: inherit; color: inherit; }
   background: linear-gradient(rgba(5,7,10,0), var(--bg)); opacity: 0; transition: opacity 1s ease;
 }
 .line {
+  display: none;
   position: absolute; inset: 0; z-index: 3; display: flex; align-items: center;
   opacity: 0; transform: scale(1.1);
   transition: opacity .5s ease, transform .5s ease;
@@ -202,7 +203,32 @@ a.btn { text-decoration: none; }
 .btn:active { transform: translateY(0); }
 
 /* la pellicola: colonna di fotogrammi verticali, bordi forati, numeri in mono (per ora solo telefono) */
-.film { display: none; }
+.film { position: relative; }
+.frame { min-width: 0; transition: opacity .45s ease; }
+.reel.dim .frame { opacity: .38; }
+.reel.dim .frame.on { opacity: 1; }
+.frame .tile { border-radius: 8px; }
+/* computer: la pellicola è orizzontale, resta ferma sullo schermo e attraversa da destra a sinistra mentre si scorre */
+@media (min-width: 761px) {
+  .film-pin { position: sticky; top: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column; justify-content: center; }
+  .film .eyebrow { margin-bottom: 22px; }
+  .reel {
+    --gut: 40px;
+    position: relative; list-style: none; margin: 0; padding: var(--gut) 6vw;
+    display: flex; gap: 20px; width: max-content; will-change: transform;
+    background:
+      repeating-linear-gradient(to right, transparent 0 12px, rgba(242,240,235,.17) 12px 23px, transparent 23px 36px) 0 14px / 100% 10px no-repeat,
+      repeating-linear-gradient(to right, transparent 0 12px, rgba(242,240,235,.17) 12px 23px, transparent 23px 36px) 0 calc(100% - 14px) / 100% 10px no-repeat,
+      #080B10;
+  }
+  .reel::before, .reel::after { content: ""; position: absolute; left: 0; right: 0; height: 1px; background: var(--line); }
+  .reel::before { top: calc(var(--gut) - 7px); height: 2px; background: var(--ribbon); }
+  .reel::after { bottom: calc(var(--gut) - 7px); }
+  .frame { flex: none; width: min(58vw, 104vh); }
+  .frame .seal { width: 96px; }
+  .fmeta { font-size: .6875rem; padding-top: 9px; }
+}
+@media (min-width: 761px) and (max-width: 1100px) { .frame { width: min(70vw, 104vh); } }
 .fmeta { display: flex; justify-content: space-between; gap: 12px; padding: 7px 2px 0; font: 500 .625rem/1.2 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--mute); }
 .fmeta b { font-weight: 500; color: var(--c, var(--ink)); }
 
@@ -350,7 +376,6 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(28px + 56px
   .row:nth-child(3) { --off: -6vw; }
 }
 @media (max-width: 760px) {
-  .track { height: 320vh; }
   .line-row { grid-template-columns: 1fr 1fr; gap: 34px 12px; }
   .line-row li:nth-child(n+3)::after { content: ""; position: absolute; left: -6px; right: -6px; top: -14px; height: 2px; background: var(--ribbon); z-index: -1; }
   .line-row::before { right: 0; }
@@ -363,9 +388,6 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(28px + 56px
   .hero-text .btn { width: 100%; }
   .brain { grid-template-columns: 1fr; }
   /* apertura a schermo intero, senza scena a tempo: poi si scorre la pellicola */
-  .track { height: auto; }
-  .stage { position: relative; }
-  .line { display: none; }
   /* striscia di pellicola: fori ai lati, filo a nastro a sinistra */
   .strip {
     --gut: 34px;
@@ -379,14 +401,12 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(28px + 56px
   .strip::before, .strip::after { content: ""; position: absolute; top: 0; bottom: 0; width: 1px; background: var(--line); }
   .strip::before { left: calc(var(--gut) - 6px); width: 2px; background: linear-gradient(to bottom, #EF764B, #EE5895 35%, #833B8F 68%, #2786B4); }
   .strip::after { right: calc(var(--gut) - 6px); }
-  .film { position: relative; display: block; padding: 76px 0 0; }
+  .film { padding: 76px 0 0; }
   .film::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 190px; background: linear-gradient(rgba(5,7,10,0), var(--bg)); pointer-events: none; }
   .film .eyebrow { margin-bottom: 18px; }
   .reel { display: grid; gap: 16px; border-bottom: 0; padding-bottom: 120px; }
-  .frame { min-width: 0; transition: opacity .45s ease; }
-  .reel.dim .frame { opacity: .38; }
-  .reel.dim .frame.on { opacity: 1; }
-  .frame .tile { border-radius: 8px; aspect-ratio: 4 / 5; }
+  .frame .tile { aspect-ratio: 4 / 5; }
+  .frame video { object-position: var(--pos, 50%) 50%; }
   .frame .seal { width: 74px; }
   /* i quattro passaggi: schede numerate, il testo guida e il video sta sotto, più piccolo */
   .method { padding-block: 84px 40px; }
@@ -431,7 +451,9 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(28px + 56px
   html { scroll-behavior: auto; }
   .track { height: auto; }
   .stage { position: relative; }
-  .line { display: none; }
+  .film { height: auto !important; }
+  .film-pin { position: static; height: auto; overflow-x: auto; padding-block: 60px; }
+  .reel { transform: none !important; }
   .wall { --tilt: 0deg; transform: translate(-50%, -50%); }
   .row { transform: translateX(var(--off, 0vw)); }
   .tile video, .btn, .wall, .row, .hero-text, .line, .shade, .edge { transition: none; }
@@ -470,8 +492,10 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(28px + 56px
 
 <main>
 <section class="film" id="film" aria-label="I video della miniserie">
-  <div class="wrap"><div class="eyebrow">Sei episodi, un solo protagonista</div></div>
-  <ol class="reel strip" id="reel"></ol>
+  <div class="film-pin">
+    <div class="wrap"><div class="eyebrow">Sei episodi, un solo protagonista</div></div>
+    <ol class="reel strip" id="reel"></ol>
+  </div>
 </section>
 
 <section class="method" id="metodo">
@@ -674,7 +698,7 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(28px + 56px
   REEL.forEach(function (id, i) {
     var li = document.createElement('li'); li.className = 'frame';
     var t = makeTile(id);
-    if (POS[id]) t.querySelector('video').style.objectPosition = POS[id] + ' 50%';
+    if (POS[id]) t.querySelector('video').style.setProperty('--pos', POS[id]);
     li.appendChild(t);
     var n = (i + 1 < 10 ? '0' : '') + (i + 1);
     var m = document.createElement('div'); m.className = 'fmeta'; m.setAttribute('aria-hidden', 'true');
@@ -682,13 +706,18 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(28px + 56px
     li.appendChild(m);
     reel.appendChild(li);
   });
-  if ('IntersectionObserver' in window) {
+  var small = window.matchMedia('(max-width: 760px)'), fo = null;
+  function watchFrames() {
+    if (!('IntersectionObserver' in window)) return;
+    if (fo) fo.disconnect();
     reel.classList.add('dim');
-    var fo = new IntersectionObserver(function (es) {
+    fo = new IntersectionObserver(function (es) {
       es.forEach(function (e) { e.target.classList.toggle('on', e.isIntersecting); });
-    }, { rootMargin: '-30% 0px -30% 0px', threshold: 0 });
+    }, { rootMargin: small.matches ? '-30% 0px -30% 0px' : '0px -22% 0px -22%', threshold: 0 });
     [].forEach.call(reel.children, function (li) { fo.observe(li); });
   }
+  watchFrames();
+  if (small.addEventListener) small.addEventListener('change', watchFrames);
 
   /* entrata morbida: ogni blocco compare mentre ci si arriva */
   if ('IntersectionObserver' in window && !rm.matches) {
@@ -767,13 +796,15 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(28px + 56px
   /* Cancello, una volta sola: se uno scorre così forte da uscire dal tratto fisso prima che
      muro dritto e fila siano stati mostrati, la pagina lo riporta in fondo al tratto e aspetta
      che la scena sia stata vista. Poi non succede più (anche se risale o riscorre). */
-  var seen = false, prevS = null, seenTimer = 0, small = window.matchMedia('(max-width: 760px)');
+  var seen = false, prevS = null, seenTimer = 0;
   function markSeen() { seen = true; clearTimeout(seenTimer); }
   function update() {
     ticking = false;
     if (rm.matches) { seen = true; return; }
     /* sul telefono la scena resta sul muro inclinato e si scorre normalmente verso la pellicola */
-    if (small.matches) { seen = true; clearTimeout(tmr); locked = false; needMove = false; TARGET = 0; if (STATE !== 0) setState(0); return; }
+    /* 13 novembre: vale anche sul computer, dove la pellicola orizzontale ha sostituito muro dritto e fila */
+    filmMove();
+    if (true) { seen = true; clearTimeout(tmr); locked = false; needMove = false; TARGET = 0; if (STATE !== 0) setState(0); return; }
     /* dopo la pausa del muro dritto, la fila arriva solo quando la persona scorre di nuovo */
     if (needMove && performance.now() >= lockEnd) needMove = false;
     var r = track.getBoundingClientRect();
@@ -796,11 +827,25 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(28px + 56px
     prevS = s;
     step();
   }
+  /* pellicola orizzontale del computer: un solo elemento spostato, in proporzione allo scorrimento */
+  var film = $('film'), travel = 0, SPEED = 2;
+  function filmSize() {
+    if (small.matches || rm.matches) { film.style.height = ''; reel.style.transform = ''; travel = 0; return; }
+    travel = Math.max(0, reel.scrollWidth - window.innerWidth);
+    film.style.height = Math.round(window.innerHeight + travel / SPEED) + 'px';
+  }
+  function filmMove() {
+    if (!travel) return;
+    var r = film.getBoundingClientRect();
+    var pr = clamp(-r.top / Math.max(1, r.height - window.innerHeight));
+    reel.style.transform = 'translate3d(' + (-pr * travel).toFixed(1) + 'px,0,0)';
+  }
   function req() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
   window.addEventListener('scroll', req, { passive: true });
-  window.addEventListener('resize', function () { measure(); req(); });
+  window.addEventListener('resize', function () { measure(); filmSize(); req(); });
+  window.addEventListener('load', function () { filmSize(); req(); });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
-  measure(); update();
+  measure(); filmSize(); update();
 
   /* episodio intero */
   var lb = $('lb'), lbv = $('lbVideo'), lbFocus = null;
