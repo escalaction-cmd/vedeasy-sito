@@ -186,7 +186,7 @@ button, input { font: inherit; color: inherit; }
 .hero-text h1 .l1 { font-weight: 300; color: var(--ink); }
 .hero-text h1 .l2 { font-weight: 500; color: var(--ink); }
 .hero-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 20px clamp(24px, 5vw, 72px); align-items: end; }
-.hero-text p { margin: 0; max-width: 62ch; font-size: clamp(.95rem, 1.35vw, 1.1rem); color: #D3D1CC; text-wrap: pretty; }
+.hero-text p { margin: 0; max-width: 62ch; font-size: clamp(.95rem, 1.4vw, 1.25rem); color: #D3D1CC; text-wrap: pretty; }
 
 /* bottone a pillola con bordo a nastro */
 .btn {
@@ -204,6 +204,7 @@ a.btn { text-decoration: none; }
 
 /* la pellicola: colonna di fotogrammi verticali, bordi forati, numeri in mono (per ora solo telefono) */
 .film { position: relative; }
+.film-nav { display: none; }
 .frame { min-width: 0; transition: opacity .45s ease; }
 .reel.dim .frame { opacity: .38; }
 .reel.dim .frame.on { opacity: 1; }
@@ -226,7 +227,14 @@ a.btn { text-decoration: none; }
   .reel::after { bottom: calc(var(--gut) - 7px); }
   .frame { flex: none; width: min(58vw, 104vh); }
   .frame .seal { width: 96px; }
-  .fmeta { font-size: .6875rem; padding-top: 9px; }
+  .fmeta { font-size: .75rem; padding-top: 10px; }
+  .film-nav { display: flex; align-items: center; gap: 18px; width: 100%; margin-top: 26px; }
+  .fbtn { flex: none; width: 52px; height: 52px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid transparent; border-radius: 999px; background: linear-gradient(var(--bg), var(--bg)) padding-box, var(--ribbon) border-box; color: var(--ink); transition: box-shadow .3s, opacity .3s; }
+  .fbtn:hover { box-shadow: 0 0 0 6px rgba(238, 88, 149, .12); }
+  .fbtn:disabled { opacity: .3; cursor: default; box-shadow: none; }
+  .fcount { flex: none; font: 500 .8125rem/1 var(--mono); letter-spacing: .12em; color: var(--ink); min-width: 7ch; }
+  .fbar { flex: 1; height: 2px; background: var(--line); border-radius: 2px; overflow: hidden; }
+  .fbar i { display: block; height: 100%; width: 100%; background: var(--ribbon); transform-origin: 0 50%; transform: scaleX(0); }
 }
 @media (min-width: 761px) and (max-width: 1100px) { .frame { width: min(70vw, 104vh); } }
 .fmeta { display: flex; justify-content: space-between; gap: 12px; padding: 7px 2px 0; font: 500 .625rem/1.2 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--mute); }
@@ -367,6 +375,18 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(28px + 56px
 .lb video { width: min(1180px, 100%); max-height: 80vh; max-height: 80svh; background: #000; border-radius: 12px; }
 .lb .close { position: absolute; right: max(16px, env(safe-area-inset-right, 0px)); top: max(12px, env(safe-area-inset-top, 0px)); }
 
+@media (min-width: 761px) {
+  /* i quattro passaggi come sul telefono: schede numerate, due per riga */
+  .steps { grid-template-columns: 1fr 1fr; gap: 20px; padding-left: 0; counter-reset: st; margin-top: clamp(40px, 5vw, 64px); }
+  .steps::before { display: none; }
+  .step { counter-increment: st; grid-template-columns: 1fr; gap: 18px; align-content: start; padding: clamp(26px, 2.8vw, 40px); background: var(--bg2); border: 1px solid var(--line); border-radius: 26px; }
+  .step::before { content: "0" counter(st); position: static; width: auto; height: auto; border: 0; border-radius: 0; background: none; font: 500 clamp(2.25rem, 3.4vw, 3rem)/1 var(--mono); letter-spacing: -.02em; color: var(--c); }
+  .step > :first-child { order: 2; }
+  .step .eyebrow { display: none; }
+  .step h3 { margin: 0 0 10px; font-size: clamp(1.4rem, 2.1vw, 1.75rem); }
+  .step p { font-size: clamp(1rem, 1.25vw, 1.125rem); max-width: 46ch; min-height: 4.8em; }
+  .step .media, .step .tile { border-radius: 14px; }
+}
 @media (max-width: 900px) {
   .cgrid { grid-template-columns: 1fr; }
 }
@@ -453,6 +473,7 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(28px + 56px
   .stage { position: relative; }
   .film { height: auto !important; }
   .film-pin { position: static; height: auto; overflow-x: auto; padding-block: 60px; }
+  .film-nav { display: none !important; }
   .reel { transform: none !important; }
   .wall { --tilt: 0deg; transform: translate(-50%, -50%); }
   .row { transform: translateX(var(--off, 0vw)); }
@@ -495,6 +516,12 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(28px + 56px
   <div class="film-pin">
     <div class="wrap"><div class="eyebrow">Sei episodi, un solo protagonista</div></div>
     <ol class="reel strip" id="reel"></ol>
+    <div class="wrap film-nav" id="filmNav">
+      <button type="button" class="fbtn" id="fPrev" aria-label="Fotogramma precedente"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 5.5 8 12l6.5 6.5"/></svg></button>
+      <span class="fcount" id="fCount" aria-live="polite">01 / 09</span>
+      <span class="fbar" aria-hidden="true"><i id="fBar"></i></span>
+      <button type="button" class="fbtn" id="fNext" aria-label="Fotogramma successivo"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 5.5 16 12l-6.5 6.5"/></svg></button>
+    </div>
   </div>
 </section>
 
@@ -834,12 +861,34 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(28px + 56px
     travel = Math.max(0, reel.scrollWidth - window.innerWidth);
     film.style.height = Math.round(window.innerHeight + travel / SPEED) + 'px';
   }
+  var fPrev = $('fPrev'), fNext = $('fNext'), fCount = $('fCount'), fBar = $('fBar'), fIdx = -1, fX = 0;
+  /* quanto va spostata la pellicola perché il fotogramma i stia al centro dello schermo */
+  function frameX(i) {
+    var li = reel.children[i];
+    return Math.max(0, Math.min(travel, li.offsetLeft + li.offsetWidth / 2 - window.innerWidth / 2));
+  }
   function filmMove() {
     if (!travel) return;
     var r = film.getBoundingClientRect();
     var pr = clamp(-r.top / Math.max(1, r.height - window.innerHeight));
-    reel.style.transform = 'translate3d(' + (-pr * travel).toFixed(1) + 'px,0,0)';
+    fX = pr * travel;
+    reel.style.transform = 'translate3d(' + (-fX).toFixed(1) + 'px,0,0)';
+    fBar.style.transform = 'scaleX(' + pr.toFixed(4) + ')';
+    var best = 0, bd = 1e9, n = reel.children.length;
+    for (var i = 0; i < n; i++) { var d = Math.abs(frameX(i) - fX); if (d < bd) { bd = d; best = i; } }
+    if (best !== fIdx) {
+      fIdx = best;
+      fCount.textContent = (best + 1 < 10 ? '0' : '') + (best + 1) + ' / ' + (n < 10 ? '0' : '') + n;
+      fPrev.disabled = best === 0; fNext.disabled = best === n - 1;
+    }
   }
+  function filmGo(dir) {
+    if (!travel) return;
+    var i = Math.max(0, Math.min(reel.children.length - 1, fIdx + dir));
+    window.scrollTo({ top: film.offsetTop + frameX(i) / SPEED, behavior: rm.matches ? 'auto' : 'smooth' });
+  }
+  fPrev.addEventListener('click', function () { filmGo(-1); });
+  fNext.addEventListener('click', function () { filmGo(1); });
   function req() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
   window.addEventListener('scroll', req, { passive: true });
   window.addEventListener('resize', function () { measure(); filmSize(); req(); });
