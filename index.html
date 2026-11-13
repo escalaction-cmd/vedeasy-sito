@@ -206,6 +206,9 @@ a.btn { text-decoration: none; }
 .fmeta { display: flex; justify-content: space-between; gap: 12px; padding: 7px 2px 0; font: 500 .625rem/1.2 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--mute); }
 .fmeta b { font-weight: 500; color: var(--c, var(--ink)); }
 
+.rv { opacity: 0; transform: translateY(26px); transition: opacity .8s ease, transform .9s cubic-bezier(.22, .7, .2, 1); }
+.rv.in { opacity: 1; transform: none; }
+
 /* momento 2: il metodo */
 .method { padding-block: clamp(72px, 11vw, 150px) clamp(56px, 8vw, 110px); }
 .method h2, .closing h2 {
@@ -376,31 +379,33 @@ footer { border-top: 1px solid var(--line); padding-block: 30px calc(30px + 56px
   .strip::before, .strip::after { content: ""; position: absolute; top: 0; bottom: 0; width: 1px; background: var(--line); }
   .strip::before { left: calc(var(--gut) - 6px); width: 2px; background: linear-gradient(to bottom, #EF764B, #EE5895 35%, #833B8F 68%, #2786B4); }
   .strip::after { right: calc(var(--gut) - 6px); }
-  .film { display: block; padding: 44px 0 8px; }
-  .film .eyebrow { margin-bottom: 16px; }
-  .reel { display: grid; gap: 16px; }
+  .film { position: relative; display: block; padding: 76px 0 0; }
+  .film::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 190px; background: linear-gradient(rgba(5,7,10,0), var(--bg)); pointer-events: none; }
+  .film .eyebrow { margin-bottom: 18px; }
+  .reel { display: grid; gap: 16px; border-bottom: 0; padding-bottom: 120px; }
   .frame { min-width: 0; transition: opacity .45s ease; }
   .reel.dim .frame { opacity: .38; }
   .reel.dim .frame.on { opacity: 1; }
-  .frame .tile, .steps .tile { border-radius: 8px; }
-  .frame .tile { aspect-ratio: 4 / 5; }
-  .frame .seal, .steps .seal { width: 74px; }
-  /* i quattro passaggi: stessa pellicola, un fotogramma per passaggio con il testo sotto */
-  .method { padding-block: 52px 44px; }
+  .frame .tile { border-radius: 8px; aspect-ratio: 4 / 5; }
+  .frame .seal { width: 74px; }
+  /* i quattro passaggi: schede numerate, il testo guida e il video sta sotto, più piccolo */
+  .method { padding-block: 84px 88px; }
   .method h2, .closing h2 { font-size: 1.5rem; }
+  .brain { margin-top: 36px; }
   .card h3 { font-size: 1.15rem; margin: 12px 0 6px; }
   .card p, .step p { font-size: .9375rem; }
-  .steps { margin: 36px -16px 0; padding: 20px var(--gut) 28px; gap: 34px; }
-  .steps::before { top: 0; }
-  .step { grid-template-columns: 1fr; gap: 12px; }
-  .step::before { display: none; }
-  .step .media { border-radius: 8px; }
-  .step .media .tile { aspect-ratio: 4 / 3; }
-  .step h3 { font-size: 1.2rem; margin: 8px 0 6px; }
-  .cap { margin-top: 7px; font-size: .6875rem; }
-  .closing { padding-block: 48px 56px; }
+  .steps { margin-top: 72px; padding: 0; gap: 16px; counter-reset: st; }
+  .steps::before { display: none; }
+  .step { counter-increment: st; grid-template-columns: 1fr; gap: 14px; padding: 24px 22px 22px; background: var(--bg2); border: 1px solid var(--line); border-radius: 22px; }
+  .step::before { content: "0" counter(st); position: static; width: auto; height: auto; border: 0; border-radius: 0; background: none; font: 500 2rem/1 var(--mono); letter-spacing: -.02em; color: var(--c); }
+  .step > :first-child { order: 2; }
+  .step .eyebrow { display: none; }
+  .step .media, .step .tile { border-radius: 12px; }
+  .step h3 { font-size: 1.25rem; margin: 0 0 8px; }
+  .cap { margin-top: 8px; font-size: .6875rem; }
+  .closing { padding-block: 88px 72px; }
   .closing p.sub { font-size: 1rem; margin-top: 12px; }
-  .tappe { margin-bottom: 40px; }
+  .tappe { margin-bottom: 64px; }
   .tlist { grid-template-columns: 1fr 1fr; gap: 22px 16px; }
   .tlist b { font-size: 1.1rem; margin-top: 8px; }
   .mailrow { margin-top: 24px; }
@@ -486,7 +491,7 @@ footer { border-top: 1px solid var(--line); padding-block: 30px calc(30px + 56px
       </div>
     </div>
 
-    <div class="steps strip">
+    <div class="steps">
       <article class="step" style="--c: var(--o)">
         <div><div class="media"><span data-mont="1" data-ep="1"></span></div><div class="cap">I luoghi della storia, decisi prima di tutto il resto.</div></div>
         <div>
@@ -697,6 +702,14 @@ footer { border-top: 1px solid var(--line); padding-block: 30px calc(30px + 56px
       es.forEach(function (e) { e.target.classList.toggle('on', e.isIntersecting); });
     }, { rootMargin: '-30% 0px -30% 0px', threshold: 0 });
     [].forEach.call(reel.children, function (li) { fo.observe(li); });
+  }
+
+  /* entrata morbida: ogni blocco compare mentre ci si arriva */
+  if ('IntersectionObserver' in window && !rm.matches) {
+    var ro = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); ro.unobserve(e.target); } });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+    [].forEach.call(document.querySelectorAll('.film .eyebrow, .method > .wrap > .eyebrow, .method h2, .card, .step, .tappe, .cgrid > div, .foot'), function (el) { el.classList.add('rv'); ro.observe(el); });
   }
 
   document.querySelectorAll('[data-mont]').forEach(function (s) { s.replaceWith(makeTile(s.dataset.mont, s.dataset.ep)); });
