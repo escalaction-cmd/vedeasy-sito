@@ -8,6 +8,9 @@
 <meta name="theme-color" content="#05070A">
 <meta name="format-detection" content="telephone=no">
 <link rel="canonical" href="https://vedeasy.com/">
+<link rel="alternate" hreflang="it" href="https://vedeasy.com/">
+<link rel="alternate" hreflang="en" href="https://vedeasy.com/en/">
+<link rel="alternate" hreflang="x-default" href="https://vedeasy.com/">
 <link rel="icon" href="brand/svg/icona-sito.svg" type="image/svg+xml">
 <link rel="icon" href="brand/png/icona-sito-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="brand/png/icona-sito-180.png">
@@ -169,6 +172,16 @@ button, input { font: inherit; color: inherit; }
 .line-row span { display: block; margin-top: 12px; font: 500 clamp(.625rem, 1vw, .8125rem)/1.35 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--c); }
 .top { position: absolute; z-index: 4; left: 0; right: 0; top: 0; padding-top: 22px; }
 .top img { height: 36px; width: auto; }
+.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+/* selettore di lingua: piccolo, in alto a destra */
+.lang {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 48px; min-height: 40px; padding: 0 14px; border-radius: 999px;
+  border: 1px solid var(--line); background: rgba(5, 7, 10, .55);
+  font: 500 .75rem/1 var(--mono); letter-spacing: .14em; color: var(--ink); text-decoration: none;
+  transition: border-color .2s, background .2s;
+}
+.lang:hover { border-color: rgba(242, 240, 235, .45); background: rgba(5, 7, 10, .8); }
 
 /* fascia del testo: fondo pieno, il testo non sta mai sopra i video */
 .hero-text {
@@ -498,7 +511,7 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(28px + 56px
         </ol>
       </div>
     </div>
-    <header class="top"><div class="wrap"><img src="brand/svg/marchio-orizzontale-colore-su-scuro.svg" alt="Vedeasy AI GENERATED"></div></header>
+    <header class="top"><div class="wrap"><img src="brand/svg/marchio-orizzontale-colore-su-scuro.svg" alt="Vedeasy AI GENERATED"><a class="lang" href="/en/" hreflang="en" lang="en" aria-label="Read this page in English">EN</a></div></header>
     <div class="hero-text" id="heroText">
       <div class="wrap">
         <h1><span class="l1">Questi video nascono da un metodo.</span><span class="l2">Lo portiamo nel tuo team.</span></h1>
