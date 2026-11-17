@@ -177,12 +177,14 @@ button, input { font: inherit; color: inherit; }
 /* selettore di lingua: piccolo, in alto a destra */
 .lang {
   display: inline-flex; align-items: center; justify-content: center;
-  min-width: 48px; min-height: 40px; padding: 0 14px; border-radius: 999px;
-  border: 1px solid var(--line); background: rgba(5, 7, 10, .55);
-  font: 500 .75rem/1 var(--mono); letter-spacing: .14em; color: var(--ink); text-decoration: none;
-  transition: border-color .2s, background .2s;
+  min-width: 52px; min-height: 44px; padding: 0 16px; border-radius: 999px;
+  border: 2px solid transparent;
+  background: linear-gradient(rgba(5, 7, 10, .9), rgba(5, 7, 10, .9)) padding-box, var(--ribbon) border-box;
+  font: 500 .875rem/1 var(--mono); letter-spacing: .12em; color: #fff; text-decoration: none;
+  box-shadow: 0 2px 18px rgba(0, 0, 0, .5);
+  transition: box-shadow .3s, transform .2s;
 }
-.lang:hover { border-color: rgba(242, 240, 235, .45); background: rgba(5, 7, 10, .8); }
+.lang:hover { box-shadow: 0 0 0 5px rgba(238, 88, 149, .16), 0 2px 18px rgba(0, 0, 0, .5); transform: translateY(-1px); }
 
 /* fascia del testo: fondo pieno, il testo non sta mai sopra i video */
 .hero-text {
