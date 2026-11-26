@@ -305,11 +305,11 @@ a.btn { text-decoration: none; }
 .closing > .wrap { position: relative; }
 .tappe { margin-bottom: clamp(96px, 11vw, 150px); }
 .tappe .eyebrow { margin-bottom: 22px; }
+/* tappe in bianco con un solo filo a nastro sopra (25 novembre 2026): i quattro colori indicano solo i passaggi del metodo */
 .tlist { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 clamp(12px, 2vw, 28px); }
-.tlist li { position: relative; padding: 16px 0 0; border-top: 1px solid var(--line); min-width: 0; }
-.tlist li::before { content: ""; position: absolute; left: 0; top: -1px; width: 28px; height: 2px; background: var(--c); }
-.tlist .n { display: block; font: 500 .75rem/1 var(--mono); letter-spacing: .1em; color: var(--c); }
-.tlist b { display: block; margin-top: 10px; font: 500 clamp(1.05rem, 1.9vw, 1.5rem)/1.15 var(--display); letter-spacing: -.01em; color: var(--ink); }
+.tlist::before { content: ""; grid-column: 1 / -1; height: 2px; border-radius: 2px; background: var(--ribbon); margin-bottom: 16px; }
+.tlist li { position: relative; padding: 0; min-width: 0; }
+.tlist b { display: block; margin-top: 0; font: 500 clamp(1.05rem, 1.9vw, 1.5rem)/1.15 var(--display); letter-spacing: -.01em; color: var(--ink); }
 .cgrid { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(32px, 6vw, 88px); align-items: start; }
 .closing p.sub { margin: 18px 0 0; font-size: clamp(1.05rem, 1.6vw, 1.3rem); color: #D3D1CC; max-width: 34ch; }
 .mailrow { margin-top: 32px; display: grid; gap: 10px; color: var(--mute); font-size: .9375rem; }
@@ -463,11 +463,12 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(28px + 56px
   .closing p.sub { font-size: 1rem; margin-top: 12px; }
   .tappe { margin-bottom: 132px; }
   .tlist { grid-template-columns: 1fr 1fr; gap: 22px 16px; }
+  .tlist::before { margin-bottom: -6px; }
   footer { padding-top: 36px; }
   .foot-top { grid-template-columns: 1fr 1fr; gap: 26px 16px; }
   .foot-top img { grid-column: 1 / -1; height: 30px; }
   .legal { flex-direction: column; gap: 1px; }
-  .tlist b { font-size: 1.1rem; margin-top: 8px; }
+  .tlist b { font-size: 1.1rem; margin-top: 0; }
   .mailrow { margin-top: 24px; }
   .mailrow code { font-size: .875rem; }
   .fields { grid-template-columns: 1fr; }
@@ -494,6 +495,234 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(28px + 56px
   .wall { --tilt: 0deg; transform: translate(-50%, -50%); }
   .row { transform: translateX(var(--off, 0vw)); }
   .tile video, .btn, .wall, .row, .hero-text, .line, .shade, .edge { transition: none; }
+}
+
+/* sezione «Come entra nel tuo team», versione 4 (26 novembre 2026): una sola interfaccia d'esempio; al computer il palco resta fermo e la sezione avanza scorrendo (settori/DECISIONE_SCORRIMENTO.md) */
+.team { padding-block: clamp(56px, 8vw, 104px) clamp(40px, 6vw, 80px); border-top: 1px solid var(--line); }
+.tm-top { display: grid; gap: 14px; }
+.team h2 { margin: 12px 0 0; font-weight: 300; letter-spacing: -.02em; line-height: 1.12; font-size: clamp(1.7rem, 3.4vw, 2.8rem); max-width: 22ch; text-wrap: balance; }
+.tm-sub { margin: 0; font-size: clamp(1rem, 1.4vw, 1.15rem); line-height: 1.5; color: #D3D1CC; max-width: 46ch; }
+@media (min-width: 761px) { .tm-top { grid-template-columns: 1.1fr 1fr; align-items: end; gap: 40px; } }
+
+/* settori: neutri, la scelta si vede dal bordo chiaro */
+.tm-sectors { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: clamp(22px, 2.4vw, 28px); }
+@media (min-width: 761px) { .tm-sectors { display: flex; flex-wrap: wrap; } }
+.tm-sectors button { min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--line); background: none; cursor: pointer; font: 400 .95rem/1.15 var(--display); color: var(--mute); transition: border-color .2s, color .2s, background .2s; }
+.tm-sectors button:hover { color: var(--ink); }
+.tm-sectors button[aria-selected="true"] { color: var(--ink); border-color: var(--ink); background: rgba(242, 240, 235, .06); }
+
+/* binario e contenitore fermo: senza aggancio sono blocchi normali */
+.tm-track { position: relative; overflow-anchor: none; }
+.tm-box { display: grid; grid-template-columns: minmax(0, 1fr) auto; padding-top: 16px; }
+.tm-box > .tm-stage { grid-column: 1 / -1; grid-row: 1; }
+.tm-box > .tm-row { grid-column: 1 / -1; grid-row: 2; }
+.tm-box > .tm-exit { grid-column: 2; grid-row: 2; align-self: center; }
+.tm-box > .tm-note { grid-column: 1 / -1; grid-row: 3; }
+/* con aggancio il contenitore resta fermo per tutto il giro; altezza piccola dello schermo (100svh), stabile anche quando le barre del telefono si nascondono */
+.team.tour .tm-pin { position: sticky; top: 0; height: 100vh; height: 100svh; display: flex; flex-direction: column; justify-content: center; }
+.team.tour .tm-box { width: 100%; padding-top: 0; column-gap: 24px; }
+.team.tour .tm-box > .tm-row { grid-column: 1; }
+
+/* palco */
+.tm-stage { overflow-anchor: none; background: var(--bg2); border: 1px solid var(--line); border-radius: 22px; overflow: hidden; display: grid; }
+.tm-nojs { margin: 0; border-radius: 0; }
+.tm-head { grid-area: head; display: flex; align-items: center; gap: 6px 16px; padding: 6px 14px 6px 18px; border-bottom: 1px solid var(--line); min-height: 44px; }
+.tm-brand { font: 500 .72rem/1.3 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--mute); min-width: 0; }
+.tm-uinote { margin: 0 0 0 auto; font: 500 .75rem/1.3 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--mute); white-space: nowrap; }
+.tm-dbtn { min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: none; color: var(--ink); cursor: pointer; font: 500 .82rem/1 var(--display); white-space: nowrap; flex: none; }
+.tm-dbtn:hover { border-color: var(--ink); }
+.tm-dbtn[hidden] { display: none; }
+
+/* barra: i quattro passaggi del metodo, lunghi quanto i loro momenti (2, 1, 1, 3); il tratto colorato si riempie */
+.tm-bar { grid-area: bar; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); column-gap: 6px; padding: 10px 18px 2px; border-bottom: 1px solid var(--line); list-style: none; margin: 0; }
+.tm-stp { grid-row: 1; font: 400 .8rem/1.3 var(--display); color: var(--mute); white-space: nowrap; padding-bottom: 4px; }
+.tm-stp b { font: 600 .72rem/1 var(--mono); letter-spacing: .06em; color: var(--c); margin-right: 6px; }
+.tm-mo { grid-row: 2; position: relative; min-width: 0; }
+.tm-mo button { width: 100%; min-height: 44px; padding: 10px 0 8px; border: 0; background: none; cursor: pointer; text-align: left; font: 400 .78rem/1.25 var(--display); color: var(--mute); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; position: relative; }
+.tm-mo button::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; border-radius: 2px; background: var(--c); opacity: .25; }
+.tm-f { position: absolute; left: 0; right: 0; top: 0; height: 3px; border-radius: 2px; background: var(--c); transform-origin: 0 50%; transform: scaleX(var(--f, 0)); transition: transform .3s; pointer-events: none; }
+.team.tour .tm-f, .tm-bar.rima .tm-f { transition: none; }
+.tm-mo button:hover { color: var(--ink); }
+.tm-mo button[aria-current="step"] { color: var(--ink); font-weight: 500; }
+.tm-mo button[aria-current="step"]::after { content: ""; position: absolute; left: 0; right: 0; top: -4px; height: 11px; border-radius: 3px; box-shadow: 0 0 0 1px var(--c); pointer-events: none; }
+.tm-tick { position: absolute; right: 2px; top: -5px; width: 13px; height: 13px; border-radius: 50%; border: 2px solid var(--ink); background: var(--bg2); pointer-events: none; }
+.tm-tick.ok { background: var(--ink); }
+.tm-mline { display: none; }
+.tm-leg { grid-row: 1; grid-column: 6 / 8; justify-self: end; display: flex; align-items: center; gap: 6px; padding-bottom: 6px; font: 500 .7rem/1.3 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--mute); white-space: nowrap; }
+.tm-leg i { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--ink); background: var(--ink); }
+
+/* corpo: immagine a sinistra, colonna a destra */
+.tm-view { grid-area: view; padding: 12px 0 0 18px; min-width: 0; }
+.tm-frame { position: relative; aspect-ratio: 16 / 9; border-radius: 14px; overflow: hidden; background: var(--bg3); }
+.tm-frame.in > :not(.tm-old) { animation: tmIn .3s cubic-bezier(.2, .6, .3, 1) both; }
+.tm-old { position: absolute; inset: 0; pointer-events: none; }
+@keyframes tmIn { from { opacity: 0; } }
+.tm-honest { margin: 6px 0 0; min-height: 1.5em; font: 400 .72rem/1.5 var(--mono); letter-spacing: .03em; color: var(--mute); }
+.tm-shot { position: relative; margin: 0; overflow: hidden; background: var(--bg3); }
+.tm-frame > .tm-shot, .tm-old > .tm-shot { position: absolute; inset: 0; }
+.tm-shot img.ph { display: block; width: 100%; height: 100%; object-fit: cover; }
+.tm-shot .seal { width: clamp(62px, 6vw, 88px); left: 8px; bottom: 8px; }
+.tm-shot .seal.sm { width: 40px; left: 5px; bottom: 5px; }
+.tm-shot.off img.ph { filter: saturate(.35) brightness(.55); }
+.tm-tag { position: absolute; top: 8px; left: 8px; padding: 5px 9px; border-radius: 999px; font: 500 .64rem/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; background: rgba(5, 7, 10, .8); color: var(--ink); border: 1px solid var(--line); }
+.tm-tag.ok { border-color: var(--ink); }
+
+/* scheda del brief: la cornice vuota disegnata dal filo */
+.tm-brief { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; gap: 14px; padding: 8% 9%; border-radius: 14px; border: 1px solid transparent; background: linear-gradient(var(--bg3), var(--bg3)) padding-box, var(--ribbon) border-box; }
+.tm-brief .tm-brand { color: var(--mute); }
+.tm-brief p { margin: 0; font: 300 clamp(1.05rem, 1.8vw, 1.45rem)/1.35 var(--display); color: var(--ink); max-width: 30ch; }
+.tm-brief ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font: 500 .72rem/1.4 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--mute); }
+.tm-brief ul b { color: var(--ink); font-weight: 500; }
+
+/* composizioni: sviluppo (chiave piccola, due sviluppi) e archivio (chiave grande, due sviluppi) */
+.tm-comp { position: absolute; inset: 0; display: grid; gap: 8px; background: var(--bg2); }
+.tm-comp .tm-shot { border-radius: 10px; min-height: 0; }
+.tm-comp.dev { grid-template-columns: 1fr 1.6fr; grid-template-rows: 1fr 1fr; }
+.tm-comp.dev .k { grid-row: 1 / 3; }
+.tm-comp.dev .tm-shot:not(.k) { opacity: .55; transition: opacity .3s, box-shadow .3s; }
+.tm-comp.dev .tm-shot.cur { opacity: 1; box-shadow: inset 0 0 0 2px var(--ink); }
+.tm-comp.dev .k.cur { box-shadow: inset 0 0 0 2px var(--ink); }
+.tm-comp.dev::before { content: ""; position: absolute; z-index: 1; left: calc(38.46% - 5px); top: 18%; bottom: 18%; width: 2px; background: var(--ribbon); border-radius: 2px; }
+.tm-comp.arc { grid-template-columns: 2.1fr 1fr; grid-template-rows: 1fr 1fr; }
+.tm-comp.arc .k { grid-row: 1 / 3; }
+
+/* formati ritagliati dalla pagina */
+.tm-fmts { position: absolute; inset: 0; display: flex; gap: 10px; align-items: center; justify-content: center; padding: 4% 3%; background: var(--bg3); }
+.tm-fmts .tm-shot { border-radius: 10px; min-width: 0; }
+
+/* colonna: strato della pagina e strato dei comandi */
+.tm-page { grid-area: page; padding: 12px 18px 0 22px; min-width: 0; }
+.tm-page.in > * { animation: tmIn .15s ease-out both; }
+.tm-sl { font: 500 .72rem/1.3 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--mute); }
+.tm-sl b { color: var(--c); font-weight: 600; margin-right: 4px; }
+.tm-page h3 { margin: 8px 0 0; font: 400 1.35rem/1.2 var(--display); color: var(--ink); }
+.tm-line { margin: 8px 0 0; font-size: .98rem; line-height: 1.45; color: #D3D1CC; min-height: 4.35em; }
+.tm-pr { display: flex; align-items: center; gap: 12px; margin-top: 2px; }
+.tm-how { min-height: 44px; padding: 0; border: 0; background: none; cursor: pointer; font: 500 .8rem/1 var(--mono); letter-spacing: .06em; color: var(--ink); text-decoration: underline; text-underline-offset: 4px; text-decoration-color: rgba(242, 240, 235, .35); }
+.tm-how:hover { text-decoration-color: var(--ink); }
+.tm-ctl { grid-area: ctl; padding: 4px 18px 14px 22px; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.tm-cmd { display: flex; flex-direction: column; gap: 10px; flex: 1; min-height: 0; }
+.tm-lv { display: grid; gap: 8px; }
+.tm-lv div { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.tm-lv span { width: 100%; font: 500 .7rem/1.2 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--mute); }
+.tm-lv button { min-height: 44px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: none; color: var(--mute); cursor: pointer; font: 400 .84rem/1 var(--display); }
+.tm-lv button[aria-pressed="true"] { color: var(--bg); background: var(--ink); border-color: var(--ink); }
+.tm-lv button:not([aria-pressed="true"]):hover { color: var(--ink); }
+.tm-ok { align-self: flex-start; min-height: 44px; padding: 0 22px; border-radius: 999px; border: 1px solid var(--ink); background: none; color: var(--ink); cursor: pointer; font: 500 .95rem/1 var(--display); transition: background .2s, color .2s, box-shadow .2s; }
+.tm-ok:hover, .tm-ok.hl { box-shadow: 0 0 0 5px rgba(242, 240, 235, .12); }
+.tm-ok[aria-pressed="true"] { background: var(--ink); color: var(--bg); cursor: default; }
+.tm-why { margin: 0; font-size: .9rem; line-height: 1.45; color: #D3D1CC; }
+.tm-why b { display: block; margin-bottom: 4px; font: 500 .66rem/1.2 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--mute); }
+
+/* «Come funziona»: si apre al posto dei comandi */
+.tm-hw { display: flex; flex-direction: column; gap: 8px; font-size: .86rem; line-height: 1.45; color: #D3D1CC; }
+.tm-hw p { margin: 0; }
+.tm-hw ul { margin: 0; padding-left: 1.1em; display: grid; gap: 3px; }
+.tm-hw .who { font: 400 .72rem/1.5 var(--mono); letter-spacing: .04em; color: var(--mute); }
+.tm-hw table { border-collapse: collapse; width: 100%; font-size: .78rem; line-height: 1.35; }
+.tm-hw th { text-align: left; font: 500 .6rem/1.2 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--mute); padding: 0 6px 4px 0; }
+.tm-hw td { vertical-align: top; padding: 4px 6px 4px 0; border-top: 1px solid var(--line); }
+.tm-hw td:first-child { white-space: nowrap; color: var(--ink); }
+.tm-close { align-self: flex-start; min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: none; color: var(--ink); cursor: pointer; font: 500 .82rem/1 var(--display); }
+.tm-close:hover { border-color: var(--ink); }
+
+/* striscia: storico della produzione con le scartate; ogni immagine nuova arriva da destra */
+.tm-strip { grid-area: strip; display: flex; gap: 8px; align-items: center; padding: 8px 18px 10px; border-top: 1px solid var(--line); overflow-x: auto; scrollbar-width: none; min-height: 78px; }
+.tm-strip::-webkit-scrollbar { display: none; }
+.tm-th { flex: none; height: 60px; padding: 0; border: 0; border-radius: 8px; background: none; cursor: pointer; position: relative; overflow: hidden; }
+.tm-th .tm-shot { height: 100%; border-radius: 8px; }
+.tm-th[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--ink); }
+.tm-th .tm-tag { top: auto; bottom: 5px; left: auto; right: 5px; padding: 3px 6px; font-size: .62rem; }
+.tm-ph { flex: none; height: 60px; border: 1px dashed rgba(242, 240, 235, .1); border-radius: 8px; }
+.tm-th.nw { animation: tmRecv .3s cubic-bezier(.2, .6, .3, 1) both; }
+.tm-strip.rima .tm-th { animation: tmRecv .3s cubic-bezier(.2, .6, .3, 1) both; animation-delay: calc(var(--i, 0) * 60ms); }
+@keyframes tmRecv { from { opacity: 0; transform: translateX(28px); } }
+
+/* riga sotto il palco: frecce, quattro segmenti dei settori, uscita verso il contatto */
+.tm-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 18px; margin-top: 10px; }
+.tm-row[hidden] { display: none; }
+.tm-arw { flex: none; width: 52px; height: 52px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid transparent; border-radius: 999px; background: linear-gradient(var(--bg), var(--bg)) padding-box, var(--ribbon) border-box; color: var(--ink); transition: box-shadow .3s, opacity .3s; }
+.tm-arw:hover { box-shadow: 0 0 0 6px rgba(238, 88, 149, .12); }
+.tm-arw[aria-disabled="true"] { opacity: .3; cursor: default; box-shadow: none; }
+.tm-segs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; min-width: 0; }
+.tm-seg { min-width: 0; min-height: 44px; padding: 0; border: 0; background: none; cursor: pointer; display: flex; flex-direction: column; justify-content: center; gap: 8px; text-align: left; color: var(--mute); }
+.tm-sg { display: block; height: 2px; border-radius: 2px; background: rgba(242, 240, 235, .22); overflow: hidden; }
+.tm-sg i { display: block; height: 100%; background: var(--ink); transform-origin: 0 50%; transform: scaleX(var(--f, 0)); }
+.tm-seg span { font: 500 .72rem/1.2 var(--mono); letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tm-seg:hover span, .tm-seg[aria-current="true"] span { color: var(--ink); }
+.tm-exit { min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid var(--line); background: none; color: var(--ink); cursor: pointer; font: 500 .85rem/1 var(--display); display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+.tm-exit:hover { border-color: var(--ink); }
+.tm-exit[hidden] { display: none; }
+.tm-exit svg { flex: none; }
+
+/* computer */
+@media (min-width: 761px) {
+  .tm-stage { grid-template-columns: minmax(0, 1.75fr) minmax(300px, 1fr); grid-template-areas: "head head" "bar bar" "view col" "strip strip"; }
+  .tm-view { padding-bottom: 2px; }
+  .tm-col { grid-area: col; height: 0; min-height: 100%; display: flex; flex-direction: column; overflow: hidden; }
+  .tm-bar { grid-template-columns: 1fr 1fr 1fr 1.25fr 1fr 1fr 1fr; }
+  .tm-stp { padding-right: 10px; }
+  .tm-ctl { flex: 1; min-height: 0; overflow: auto; scrollbar-width: thin; }
+}
+@media (min-width: 761px) and (max-width: 1180px) {
+  .tm-stp span { display: none; }
+}
+/* tablet: la colonna dell'immagine è stretta e la riga di onestà può andare a capo; due righe riservate, così il palco non cambia altezza */
+@media (min-width: 761px) and (max-width: 860px) { .tm-honest { min-height: 3em; } }
+
+/* telefono */
+@media (max-width: 760px) {
+  .tm-stage { grid-template-columns: minmax(0, 1fr); grid-template-areas: "head" "bar" "view" "col" "strip"; border-radius: 18px; }
+  .tm-col { grid-area: col; }
+  .tm-head { flex-wrap: wrap; padding: 8px 12px; gap: 4px 12px; }
+  .tm-head > .tm-brand { flex: 1 1 100%; }
+  .tm-uinote { margin-left: 0; }
+  .tm-dbtn { margin-left: auto; }
+  .tm-leg { display: none; }
+  .tm-bar { padding: 10px 12px 0; column-gap: 4px; }
+  .tm-stp span { display: none; }
+  .tm-stp { padding-bottom: 4px; }
+  .tm-mo button { font-size: 0; color: transparent; padding: 0; min-height: 44px; }
+  .tm-mo button[aria-current="step"]::after { top: -4px; height: 11px; }
+  .tm-mline { display: block; grid-column: 1 / -1; grid-row: 3; padding: 2px 0 10px; font: 500 .7rem/1.3 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink); min-height: calc(2.6em + 12px); }
+  .tm-mline b { color: var(--c); margin-right: 4px; }
+  .tm-view { padding: 12px 12px 0; }
+  .tm-honest { margin-top: 6px; min-height: 3em; }
+  .tm-page { padding: 6px 12px 0; }
+  .tm-page .tm-sl, .tm-page h3 { display: none; }
+  .tm-line { margin-top: 2px; min-height: 4.35em; font-size: .95rem; }
+  .tm-ctl { padding: 4px 12px 14px; min-height: 120px; }
+  .tm-lv { gap: 6px; }
+  .tm-lv span { width: auto; margin-right: 4px; }
+  .tm-strip { padding: 10px 12px 12px; min-height: 80px; }
+  .tm-th, .tm-ph { height: 56px; }
+  .tm-row { gap: 12px; }
+  .tm-arw { width: 44px; height: 44px; }
+  .tm-segs { gap: 6px; }
+  .tm-seg { pointer-events: none; cursor: default; }
+  .tm-seg span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  /* palco compatto del telefono mentre è fermo (26 novembre 2026, CLAUDE.md 28.hh): testata, barra, immagine, una frase e «Come funziona»;
+     leve, Approva e striscia tornano quando si tocca un comando e il palco si sgancia. Le approvazioni restano sui pallini della barra. */
+  .team.tour .tm-box { column-gap: 0; }
+  .team.tour .tm-box > .tm-row { grid-column: 1 / -1; }
+  .team.tour .tm-box > .tm-exit { grid-column: 1 / -1; grid-row: 2; justify-self: center; align-self: end; position: relative; z-index: 1; max-width: calc(100% - 112px); padding: 0 14px; }
+  .team.cmp .tm-ctl, .team.cmp .tm-strip { display: none; }
+  .team.cmp .tm-mline { min-height: 0; padding-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .team.cmp .tm-mline .st { display: none; }
+  .team.cmp .tm-page { padding-bottom: 4px; }
+  .team.cmp .tm-row { position: relative; margin-top: 16px; }
+  .team.cmp .tm-row > [data-go="1"] { grid-column: 3; }
+  .team.cmp .tm-segs { position: absolute; left: 56px; right: 56px; top: -10px; }
+  .team.cmp .tm-seg { min-height: 0; gap: 0; }
+}
+.tm-note { margin: 6px 0 0; font: 400 .74rem/1.4 var(--mono); letter-spacing: .04em; color: var(--mute); max-width: 80ch; }
+.tm-end { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 18px; margin-top: clamp(26px, 3.5vw, 40px); }
+.tm-ask { margin: 0; font: 300 clamp(1.2rem, 2vw, 1.55rem)/1.3 var(--display); color: var(--ink); }
+@media (max-width: 760px) { .tm-end .btn { width: 100%; } .tm-sectors button { padding: 0 10px; font-size: .88rem; } }
+.tm-vh { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .tm-frame.in > *, .tm-page.in > *, .tm-th.nw, .tm-strip.rima .tm-th { animation: none; }
+  .tm-f, .tm-comp.dev .tm-shot:not(.k), .tm-arw { transition: none; }
 }
 </style>
 </head>
@@ -586,15 +815,54 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(28px + 56px
   </div>
 </section>
 
+<section class="team" id="team" data-lang="en" aria-labelledby="t-team">
+  <div class="wrap">
+    <div class="tm-top">
+      <div>
+        <div class="eyebrow">Inside your team</div>
+        <h2 id="t-team">The same method, in your sector.</h2>
+      </div>
+      <p class="tm-sub">Four steps, one example: yours is designed with your team.</p>
+    </div>
+
+    <div class="tm-sectors" role="tablist" aria-label="Choose a sector" id="tmSectors">
+      <button type="button" role="tab" aria-selected="true" aria-controls="tmStage" data-s="0">Entertainment</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="tmStage" tabindex="-1" data-s="1">Tourism and places</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="tmStage" tabindex="-1" data-s="2">Grocery retail</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="tmStage" tabindex="-1" data-s="3">Fashion</button>
+    </div>
+  </div>
+
+  <div class="tm-track" id="tmTrack">
+    <div class="tm-pin" id="tmPin">
+      <div class="wrap tm-box">
+        <button type="button" class="tm-exit" id="tmExit" hidden></button>
+        <div class="tm-stage" id="tmStage" role="tabpanel" aria-labelledby="t-team">
+          <figure class="tm-shot tm-nojs"><img class="ph" src="settori/intrattenimento/chiave.jpg" alt="A giant lantern owl on the stage of a packed historic theatre; a child points at it" width="1600" height="900"><img class="seal" src="brand/svg/sigillo-ai-generated.svg" alt="AI generated image"></figure>
+        </div>
+        <div class="tm-row" id="tmRow" hidden></div>
+        <p class="tm-note">Examples made by us with AI, Naples included.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="tm-end" id="tmEnd">
+      <p class="tm-ask">Which production shall we try?</p>
+      <button class="btn" type="button" data-contact>Let’s bring the method to you</button>
+    </div>
+  </div>
+</section>
+
 <section class="closing" id="contatto">
   <div class="wrap">
     <div class="tappe">
       <div class="eyebrow">Our path together, in four stages</div>
       <ol class="tlist">
-        <li style="--c: var(--o)"><span class="n">01</span><b>Execute</b></li>
-        <li style="--c: var(--p)"><span class="n">02</span><b>Expand</b></li>
-        <li style="--c: var(--vl)"><span class="n">03</span><b>Consolidate</b></li>
-        <li style="--c: var(--bl)"><span class="n">04</span><b>Scale</b></li>
+        <li><b>Execute</b></li>
+        <li><b>Expand</b></li>
+        <li><b>Consolidate</b></li>
+        <li><b>Scale</b></li>
       </ol>
     </div>
 
@@ -703,6 +971,1319 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(28px + 56px
   </div>
 </div>
 
+<script>
+/* sezione «Come entra nel tuo team», versione 4 (26 novembre 2026, settori/DECISIONE_SCORRIMENTO.md): una sola interfaccia d'esempio.
+   Palco ad altezza fissa: barra dei quattro passaggi con sette momenti, immagine, colonna (pagina e comandi), striscia; sotto, la riga con frecce, settori e uscita.
+   Dove palco e riga stanno nello schermo: il palco resta fermo e la sezione avanza scorrendo (copertina e dieci tappe); al telefono con il palco compatto (26 novembre, CLAUDE.md 28.hh).
+   Dove non stanno (schermi bassi, telefoni piccoli): demo a tempo dello stesso giro.
+   Testi in due lingue nell'oggetto T: la lingua la sceglie data-lang della sezione. */
+(function () {
+  var section = document.getElementById('team'), stage = document.getElementById('tmStage');
+  if (!section || !stage) return;
+  var L = section.getAttribute('data-lang') === 'en' ? 'en' : 'it';
+  var rm = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var fine = window.matchMedia('(hover: hover) and (pointer: fine)');
+  var SEAL = 'brand/svg/sigillo-ai-generated.svg';
+  var R3 = ['16 / 9', '4 / 5', '9 / 16'];
+  var STEP = [0, 0, 1, 2, 3, 3, 3];          /* momento → passaggio del metodo */
+  var GATE = { 1: 0, 2: 1, 5: 2 };            /* momenti in cui approvi tu → approvazione */
+  var COL = ['var(--o)', 'var(--p)', 'var(--vl)', 'var(--bl)'];
+  /* per settore: cartella, fuoco orizzontale dei ritagli, versioni (immagine e valori delle leve), immagine dei formati, ordine dei formati, scelte della demo */
+  var CFG = [
+    { dir: 'intrattenimento', focus: { chiave: 68, 'sviluppo-1': 48, 'sviluppo-2': 62 },
+      vers: [['chiave', [0]], ['sviluppo-1', [1]], ['sviluppo-2', [2]]], fmt: 'sviluppo-1', ch: R3, demo: { req: 0, lv: [0, 2], rej: 0 } },
+    { dir: 'turismo', focus: { chiave: 66, 'sviluppo-1': 42, 'sviluppo-2': 33 },
+      vers: [['chiave', [0, 0, 0]], ['sviluppo-1', [0, 1, 0]], ['sviluppo-2', [1, 0, 1]]], fmt: 'chiave', ch: R3, demo: { req: 1, lv: [0, 1], rej: 0 } },
+    { dir: 'grande-distribuzione', focus: { chiave: 50, 'sviluppo-1': 50, 'sviluppo-2': 45 },
+      vers: [['chiave', [0, 0]], ['sviluppo-1', [0, 1]], ['sviluppo-2', [1, 0]]], fmt: 'chiave', ch: ['16 / 9', '9 / 16', '4 / 5'], demo: { req: 0, lv: [0, 1], rej: 0 } },
+    { dir: 'moda', focus: { chiave: 70, 'sviluppo-1': 50, 'sviluppo-2': 50 },
+      vers: [['chiave', [0, 0]], ['sviluppo-1', [1, 0]], ['sviluppo-2', [0, 1]]], fmt: 'chiave', ch: R3, demo: { req: 1, lv: [1, 1], rej: 0 } }
+  ];
+
+  /*TESTI*/
+  /* testi della versione 4 generati da parti/testi_v3.py (fonti settori/TESTI_SEZIONE_V3.md e settori/TESTI_SCORRIMENTO.md): non modificare qui */
+  var T = {
+ "it": {
+  "uiNote": "Interfaccia d’esempio",
+  "legend": "Approvi tu",
+  "steps": [
+   "Definizione narrativa",
+   "Costruzione visiva",
+   "Sviluppo audiovisivo",
+   "Controllo e finalizzazione"
+  ],
+  "mom": [
+   {
+    "n": "Brief",
+    "line": "Scrivi l’obiettivo in una riga: le regole del marchio sono già dentro.",
+    "how": {
+     "lead": "Il Brain Creativo legge prima la scheda e l’archivio del marchio. Dentro lavorano più ruoli, ognuno con il suo compito. Le regole di questo marchio:",
+     "who": "Chi lavora: regia, art director."
+    }
+   },
+   {
+    "n": "Concept e regia",
+    "line": "Prima di ogni immagine, la tavola decide storia, luce e materiali.",
+    "how": {
+     "lead": "La tavola di regia fissa storia, luce, materiali e colori; dentro c’è anche lo storyboard. Qui approvi tu: le immagini partono solo dopo il tuo sì.",
+     "who": "Chi lavora: regia, art director, copy."
+    }
+   },
+   {
+    "n": "Immagine chiave",
+    "line": "L’immagine chiave fissa protagonista, luce e luogo per tutte le altre.",
+    "how": {
+     "lead": "Prima si fissa l’identità, poi si declina: ogni immagine dopo segue la chiave. Approvi tu l’immagine chiave; da qui il piano approvato fa da via libera fino alla versione finale.",
+     "who": "Chi lavora: art director, controllo qualità."
+    }
+   },
+   {
+    "n": "Sviluppo",
+    "line": "Ogni scena nuova parte dalla chiave: stesso protagonista, stessa luce.",
+    "how": {
+     "lead": "Una leva cambia una cosa sola, per esempio zona, ora o stagione; protagonista, luce e tono restano quelli della chiave.",
+     "who": "Chi lavora: art director, regia."
+    },
+    "honest": "L’esempio mostra immagini; nei video arrivano movimento, suono e montaggio."
+   },
+   {
+    "n": "Controllo",
+    "line": "Cinque verifiche per immagine; gli scarti restano, con il motivo.",
+    "how": {
+     "lead": "Cinque verifiche: luce coerente con la chiave, bordi puliti, nessun marchio, volti e prodotti credibili, nessuna somiglianza con opere esistenti. Due bocciature sulla stessa immagine: si cambia strada.",
+     "who": "Chi lavora: controllo qualità, del marchio, della proprietà intellettuale."
+    }
+   },
+   {
+    "n": "Formati e consegna",
+    "line": "L’ultimo sì è tuo, poi la consegna in tre formati.",
+    "how": {
+     "lead": "Approvi tu la versione finale. Poi la consegna: 16:9 per sito e schermi, 4:5 per i social, 9:16 per il verticale. Prima di uscire, anche le parole passano il controllo del marchio.",
+     "who": "Chi lavora: art director, copy, controllo del marchio."
+    }
+   },
+   {
+    "n": "Archivio",
+    "line": "Ciò che approvi entra nell’archivio: il lavoro dopo parte da qui.",
+    "how": {
+     "lead": "A fine produzione si scrive cosa ha funzionato. Per la prossima volta:",
+     "who": "Chi lavora: regia, controllo qualità."
+    }
+   }
+  ],
+  "approve": "Approva",
+  "approved": "Via libera",
+  "how": "Come funziona",
+  "close": "Chiudi",
+  "prev": "Momento precedente",
+  "next": "Momento successivo",
+  "ok": "Approvata",
+  "no": "Scartata",
+  "why": "Motivo",
+  "fm": [
+   "16:9 sito",
+   "4:5 social",
+   "9:16 verticale"
+  ],
+  "lvAria": "Leve",
+  "log": "Registro dei tentativi",
+  "logCols": [
+   "Voce",
+   "Esito"
+  ],
+  "stripUi": "Storico della produzione",
+  "board": "Tavola fatta per l’esempio, dopo la foto.",
+  "pause": "Pausa",
+  "resume": "Riprendi",
+  "again": "Rivedi",
+  "pauseAria": "Metti in pausa l’esempio",
+  "resumeAria": "Riprendi l’esempio da qui",
+  "seal": "Immagine generata con AI",
+  "s": [
+   {
+    "brand": "Studio di intrattenimento",
+    "goal": "Portare lo spettacolo dal teatro alla piazza, fino alle case.",
+    "rules": [
+     "Tono: la meraviglia vista con gli occhi dell’infanzia.",
+     "Luce: il gufo è la sorgente; caldo dentro, notte intorno.",
+     "Mai: flash, personaggi che ricordano serie esistenti."
+    ],
+    "lev": [
+     [
+      "Dove",
+      [
+       "A teatro",
+       "In piazza",
+       "In casa"
+      ]
+     ]
+    ],
+    "honest": "I primi due tentativi sono veri; la foto col flash è ricostruita.",
+    "rej": [
+     [
+      "scartata-prima-idea",
+      "Burattinai a vista: ricordano spettacoli famosi."
+     ],
+     [
+      "scartata-seconda-prova",
+      "Burattinai spariti, ma le prime file sono ancora vuote."
+     ],
+     [
+      "scartata",
+      "Foto con il flash: il gufo torna carta e vimini."
+     ]
+    ],
+    "log": [
+     [
+      "Tentativo 1",
+      "Rifatto: platea vuota e burattinai a vista."
+     ],
+     [
+      "Tentativo 2",
+      "Rifatto: burattinai spariti, prime file ancora vuote."
+     ],
+     [
+      "Tentativo 3",
+      "Approvato: teatro pieno, il gufo vola da solo."
+     ]
+    ],
+    "mem": [
+     "Il gufo vola da solo: nessun burattinaio in scena.",
+     "Pubblico sempre pieno, a teatro e in piazza."
+    ],
+    "alt": {
+     "chiave": "Un gufo gigante di lanterne sul palco di un teatro storico pieno; dalla platea, una manina lo indica",
+     "concept": "Disegno tecnico del gufo",
+     "sviluppo-1": "Il gufo sopra una piazza piena di famiglie",
+     "sviluppo-2": "La lampada gufo in una cameretta"
+    }
+   },
+   {
+    "brand": "Napoli",
+    "goal": "Riportare le persone a Napoli in autunno.",
+    "rules": [
+     "Tono: la città raccontata da chi la vive.",
+     "Luce: tramonto o ora blu, mai sole a picco.",
+     "Mai: stemmi, insegne di negozi, effetto cartolina."
+    ],
+    "lev": [
+     [
+      "Zona",
+      [
+       "Posillipo",
+       "Centro storico"
+      ]
+     ],
+     [
+      "Tema",
+      [
+       "Mare",
+       "Prodotti tipici"
+      ]
+     ],
+     [
+      "Ora",
+      [
+       "Tramonto",
+       "Ora blu"
+      ]
+     ]
+    ],
+    "honest": "La scartata è ricostruita per l’esempio; il registro è vero.",
+    "rej": [
+     [
+      "scartata",
+      "La stessa scena a mezzogiorno: effetto cartolina."
+     ]
+    ],
+    "log": [
+     [
+      "Immagine chiave",
+      "Approvata al primo tentativo."
+     ],
+     [
+      "Tavola di regia",
+      "Corretta: tolta una scritta a mano in inglese."
+     ]
+    ],
+    "mem": [
+     "Il pescatore al tramonto è il volto delle prossime uscite.",
+     "Anche le tavole di regia passano il controllo: nessuna scritta a mano."
+    ],
+    "alt": {
+     "chiave": "Un pescatore sulla sua barca a Posillipo, al tramonto, con il Vesuvio sullo sfondo",
+     "concept": "Storyboard a matita e acquerello",
+     "sviluppo-1": "Il pescatore con i prodotti tipici",
+     "sviluppo-2": "Il pescatore nel centro storico, all’ora blu"
+    }
+   },
+   {
+    "brand": "Catena di supermercati",
+    "goal": "Il volantino della settimana diventa cinema.",
+    "rules": [
+     "Tono: il prodotto come in un quadro antico, vero e invitante.",
+     "Luce: una sola, stretta, di lato; intorno il buio.",
+     "Mai: etichette, marchi, luce da catalogo."
+    ],
+    "lev": [
+     [
+      "Reparto",
+      [
+       "Dispensa",
+       "Pescheria"
+      ]
+     ],
+     [
+      "Stagione",
+      [
+       "Tutto l’anno",
+       "Autunno"
+      ]
+     ]
+    ],
+    "honest": "Questi scarti sono tentativi veri di questa produzione.",
+    "rej": [
+     [
+      "scartata-prima-idea",
+      "Il reparto ortofrutta visto dalla corsia: banale."
+     ],
+     [
+      "scartata",
+      "Luce uniforme: sembra un catalogo."
+     ]
+    ],
+    "log": [
+     [
+      "Tentativo 1",
+      "Scartato: l’ortofrutta vista dalla corsia, banale."
+     ],
+     [
+      "Tentativo 2",
+      "Scartato: luce uniforme, sembra un catalogo."
+     ],
+     [
+      "Tentativo 3",
+      "Rifatto: bande nere ai lati e alone sul muro."
+     ],
+     [
+      "Tentativo 4",
+      "Approvato: luce calda, da quadro antico."
+     ]
+    ],
+    "mem": [
+     "Il volantino nasce dalla natura morta: la corsia è risultata banale.",
+     "Una luce sola e stretta: la luce uniforme fa catalogo.",
+     "Nero vero fino ai bordi: niente bande, niente alone."
+    ],
+    "alt": {
+     "chiave": "Pasta, pomodori, olio, formaggio, pane e vino come in un quadro antico",
+     "concept": "Carboncino sulla griglia vuota del volantino",
+     "sviluppo-1": "La natura morta d’autunno",
+     "sviluppo-2": "La pescheria con la stessa luce"
+    }
+   },
+   {
+    "brand": "Marchio di moda",
+    "goal": "Lanciare il cappotto della nuova collezione.",
+    "rules": [
+     "Tono: il capo raccontato dall’architettura.",
+     "Luce: bassa e radente, che mostra la fibra.",
+     "Mai: pelle di cera, tessuto che sembra plastica."
+    ],
+    "lev": [
+     [
+      "Inquadratura",
+      [
+       "Capo intero",
+       "Dettaglio"
+      ]
+     ],
+     [
+      "Momento",
+      [
+       "Sole d’inverno",
+       "Sera di pioggia"
+      ]
+     ]
+    ],
+    "honest": "La scartata è ricostruita per l’esempio; il registro è vero.",
+    "rej": [
+     [
+      "scartata",
+      "Effetto render: pelle di cera, tessuto senza fibra."
+     ]
+    ],
+    "log": [
+     [
+      "Immagini della serie",
+      "Approvate al primo tentativo."
+     ],
+     [
+      "Sera di pioggia",
+      "Pilastri squadrati al posto degli archi, per non ricordare edifici famosi."
+     ]
+    ],
+    "mem": [
+     "La serie è passata al primo tentativo: luce e luoghi restano questi.",
+     "Portici a pilastri squadrati, senza archi famosi."
+    ],
+    "alt": {
+     "chiave": "Un personaggio con un cappotto cammello scende una scalinata di travertino",
+     "concept": "Figurino con campioni di lana e travertino",
+     "sviluppo-1": "Il bavero e il bottone del cappotto",
+     "sviluppo-2": "Il cappotto una sera di pioggia sotto il portico"
+    }
+   }
+  ],
+  "segAria": "Vai a un settore",
+  "exit": "Vai al contatto",
+  "againAria": "Rivedi l’esempio dall’inizio",
+  "liveOk": "{m}: via libera.",
+  "liveLever": "La leva ha cambiato l’immagine.",
+  "liveRej": "Immagine scartata, con il motivo.",
+  "liveSector": "Settore: {s}.",
+  "exitMore": ", dopo l’esempio"
+ },
+ "en": {
+  "uiNote": "Example interface",
+  "legend": "You approve",
+  "steps": [
+   "Narrative definition",
+   "Visual construction",
+   "Audiovisual development",
+   "Review and finalization"
+  ],
+  "mom": [
+   {
+    "n": "Brief",
+    "line": "Write the goal in one line: your brand rules are already in.",
+    "how": {
+     "lead": "The Creative Brain reads the card and the brand archive first. Several roles work inside it, each with its own job. This brand’s rules:",
+     "who": "Who’s on it: director, art director."
+    }
+   },
+   {
+    "n": "Concept and direction",
+    "line": "Before any image, the board settles story, light and materials.",
+    "how": {
+     "lead": "The director’s board fixes story, light, materials and colours, with the storyboard inside. You approve here: images start only after your yes.",
+     "who": "Who’s on it: director, art director, copywriter."
+    }
+   },
+   {
+    "n": "Key image",
+    "line": "The key image fixes subject, light and place for all the others.",
+    "how": {
+     "lead": "Identity first, variations after: every later image follows the key image. You approve the key image; from here the approved plan is the green light up to the final version.",
+     "who": "Who’s on it: art director, quality check."
+    }
+   },
+   {
+    "n": "Development",
+    "line": "Every new scene starts from the key image: same subject, same light.",
+    "how": {
+     "lead": "A lever changes one thing only, such as area, time or season; subject, light and tone stay as in the key image.",
+     "who": "Who’s on it: art director, director."
+    },
+    "honest": "The example shows stills; videos add movement, sound and editing."
+   },
+   {
+    "n": "Review",
+    "line": "Five checks per image; rejects are kept, with the reason.",
+    "how": {
+     "lead": "Five checks: light matching the key image, clean edges, no logos, believable faces and products, no likeness to existing works. Two rejections on one image: we change approach.",
+     "who": "Who’s on it: quality, brand and intellectual property checks."
+    }
+   },
+   {
+    "n": "Formats and delivery",
+    "line": "The last yes is yours, then delivery in three formats.",
+    "how": {
+     "lead": "You approve the final version. Then delivery: 16:9 for website and screens, 4:5 for social, 9:16 for vertical. Before release, the words also pass the brand check.",
+     "who": "Who’s on it: art director, copywriter, brand check."
+    }
+   },
+   {
+    "n": "Archive",
+    "line": "What you approve enters the archive: the next job starts here.",
+    "how": {
+     "lead": "At the end of each production, what worked gets written down. For next time:",
+     "who": "Who’s on it: director, quality check."
+    }
+   }
+  ],
+  "approve": "Approve",
+  "approved": "Approved",
+  "how": "How it works",
+  "close": "Close",
+  "prev": "Previous moment",
+  "next": "Next moment",
+  "ok": "Approved",
+  "no": "Rejected",
+  "why": "Reason",
+  "fm": [
+   "16:9 website",
+   "4:5 social",
+   "9:16 vertical"
+  ],
+  "lvAria": "Levers",
+  "log": "Attempt log",
+  "logCols": [
+   "Entry",
+   "Outcome"
+  ],
+  "stripUi": "Production history",
+  "board": "Board made for this example, after the photo.",
+  "pause": "Pause",
+  "resume": "Resume",
+  "again": "Replay",
+  "pauseAria": "Pause the example",
+  "resumeAria": "Resume the example from here",
+  "seal": "AI generated image",
+  "s": [
+   {
+    "brand": "Entertainment studio",
+    "goal": "Take the show from the theatre to the square, into homes.",
+    "rules": [
+     "Tone: wonder, seen through a child’s eyes.",
+     "Light: the owl is the source; warm inside, night around.",
+     "Never: flash, characters that recall existing series."
+    ],
+    "lev": [
+     [
+      "Where",
+      [
+       "On stage",
+       "In the square",
+       "At home"
+      ]
+     ]
+    ],
+    "honest": "The first two attempts are real; the flash shot is staged.",
+    "rej": [
+     [
+      "scartata-prima-idea",
+      "Puppeteers in view recall famous shows."
+     ],
+     [
+      "scartata-seconda-prova",
+      "Puppeteers gone, but the front rows are still empty."
+     ],
+     [
+      "scartata",
+      "Flash photo: the owl turns back into paper and wicker."
+     ]
+    ],
+    "log": [
+     [
+      "Attempt 1",
+      "Redone: empty stalls, puppeteers in view."
+     ],
+     [
+      "Attempt 2",
+      "Redone: puppeteers gone, front rows still empty."
+     ],
+     [
+      "Attempt 3",
+      "Approved: a full house, the owl flies on its own."
+     ]
+    ],
+    "mem": [
+     "The owl flies on its own: no puppeteers on stage.",
+     "Always a full crowd, in the theatre and in the square."
+    ],
+    "alt": {
+     "chiave": "A giant lantern owl on the stage of a packed historic theatre; a child points at it",
+     "concept": "Technical drawing of the owl",
+     "sviluppo-1": "The owl above a square full of families",
+     "sviluppo-2": "The owl lamp in a child’s bedroom"
+    }
+   },
+   {
+    "brand": "Naples",
+    "goal": "Bring people back to Naples in autumn.",
+    "rules": [
+     "Tone: the city told by the people who live in it.",
+     "Light: sunset or blue hour, never harsh midday sun.",
+     "Never: coats of arms, shop signs, postcard look."
+    ],
+    "lev": [
+     [
+      "Area",
+      [
+       "Posillipo",
+       "Old town"
+      ]
+     ],
+     [
+      "Theme",
+      [
+       "Sea",
+       "Local food"
+      ]
+     ],
+     [
+      "Time",
+      [
+       "Sunset",
+       "Blue hour"
+      ]
+     ]
+    ],
+    "honest": "The reject is staged for this example; the log is real.",
+    "rej": [
+     [
+      "scartata",
+      "The same scene at midday: postcard look."
+     ]
+    ],
+    "log": [
+     [
+      "Key image",
+      "Approved at the first attempt."
+     ],
+     [
+      "Director’s board",
+      "Fixed: a handwritten English line was removed."
+     ]
+    ],
+    "mem": [
+     "The fisherman at sunset is the face of the next pieces.",
+     "Director’s boards get checked too: no handwriting on them."
+    ],
+    "alt": {
+     "chiave": "A fisherman on a boat in Posillipo at sunset, with Vesuvius behind",
+     "concept": "Pencil and watercolour storyboard",
+     "sviluppo-1": "The fisherman with local food",
+     "sviluppo-2": "The fisherman in the old town at blue hour"
+    }
+   },
+   {
+    "brand": "Supermarket chain",
+    "goal": "The weekly flyer becomes cinema.",
+    "rules": [
+     "Tone: the product as in an old painting, real and inviting.",
+     "Light: a single narrow beam from the side; darkness around.",
+     "Never: labels, logos, catalogue lighting."
+    ],
+    "lev": [
+     [
+      "Department",
+      [
+       "Pantry",
+       "Fish counter"
+      ]
+     ],
+     [
+      "Season",
+      [
+       "All year",
+       "Autumn"
+      ]
+     ]
+    ],
+    "honest": "These rejects are real attempts from this production.",
+    "rej": [
+     [
+      "scartata-prima-idea",
+      "The fruit and veg department seen from the aisle: predictable."
+     ],
+     [
+      "scartata",
+      "Even light: it looks like a catalogue."
+     ]
+    ],
+    "log": [
+     [
+      "Attempt 1",
+      "Rejected: fruit and veg from the aisle, predictable."
+     ],
+     [
+      "Attempt 2",
+      "Rejected: even light, it looks like a catalogue."
+     ],
+     [
+      "Attempt 3",
+      "Redone: black side bands, a glow on the wall."
+     ],
+     [
+      "Attempt 4",
+      "Approved: warm light, like an old painting."
+     ]
+    ],
+    "mem": [
+     "The flyer starts from the still life: the aisle turned out predictable.",
+     "One narrow light: even light looks like a catalogue.",
+     "True black to the edges: no bands, no glow."
+    ],
+    "alt": {
+     "chiave": "Pasta, tomatoes, oil, cheese, bread and wine as in an old painting",
+     "concept": "Charcoal over the empty flyer grid",
+     "sviluppo-1": "The autumn still life",
+     "sviluppo-2": "The fish counter in the same light"
+    }
+   },
+   {
+    "brand": "Fashion brand",
+    "goal": "Launch the coat of the new collection.",
+    "rules": [
+     "Tone: the garment told through architecture.",
+     "Light: low and raking, showing the fibre.",
+     "Never: waxy skin, fabric that looks like plastic."
+    ],
+    "lev": [
+     [
+      "Framing",
+      [
+       "Full look",
+       "Detail"
+      ]
+     ],
+     [
+      "Moment",
+      [
+       "Winter sun",
+       "Rainy evening"
+      ]
+     ]
+    ],
+    "honest": "The reject is staged for this example; the log is real.",
+    "rej": [
+     [
+      "scartata",
+      "Render look: waxy skin, fabric with no fibre."
+     ]
+    ],
+    "log": [
+     [
+      "The series",
+      "Approved at the first attempt."
+     ],
+     [
+      "Rainy evening",
+      "Square pillars instead of arches, so it recalls no famous building."
+     ]
+    ],
+    "mem": [
+     "The series passed at the first attempt: light and places stay as they are.",
+     "Porticoes with square pillars, no famous arches."
+    ],
+    "alt": {
+     "chiave": "A character in a camel coat walks down a travertine staircase",
+     "concept": "Fashion sketch with wool and travertine samples",
+     "sviluppo-1": "The lapel and the button of the coat",
+     "sviluppo-2": "The coat on a rainy evening under the portico"
+    }
+   }
+  ],
+  "segAria": "Jump to a sector",
+  "exit": "Jump to contact",
+  "againAria": "Replay the example from the start",
+  "liveOk": "{m}: approved.",
+  "liveLever": "The lever changed the image.",
+  "liveRej": "Rejected image, with its reason.",
+  "liveSector": "Sector: {s}.",
+  "exitMore": ", after the example"
+ }
+};
+  /*/TESTI*/
+  var U = T[L] || T.it;
+  var SECT = [].map.call(document.querySelectorAll('#tmSectors [role="tab"]'), function (b) { return b.textContent.trim(); });
+
+  /* stato: settore, momento, leve, approvazioni, immagine aperta dalla striscia, «Come funziona» aperto */
+  var st = { s: 0, m: 6, sel: CFG.map(function (c) { return c.vers[0][1].slice(); }), ok: CFG.map(function () { return [true, true, true]; }), peek: null, how: null };
+  var near = false; /* finché la sezione è lontana le immagini aspettano; poi si caricano subito */
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  function clamp(x, a, b) { return x < a ? a : x > b ? b : x; }
+  function C() { return CFG[st.s]; }
+  function S() { return U.s[st.s]; }
+  function src(name, s) { return 'settori/' + CFG[s == null ? st.s : s].dir + '/' + name + '.jpg'; }
+  function altOf(name) {
+    var a = S().alt[name]; if (a) return a;
+    var r = S().rej.filter(function (x) { return x[0] === name; })[0]; return r ? U.no + ': ' + r[1] : U.seal;
+  }
+  function shot(name, opts) {
+    opts = opts || {};
+    var fx = C().focus[name] != null ? C().focus[name] : 50;
+    return '<figure class="tm-shot' + (opts.cls ? ' ' + opts.cls : '') + '"' + (opts.ratio ? ' style="aspect-ratio:' + opts.ratio + ';flex:' + ratioNum(opts.ratio) + ' 1 0"' : '') + '>' +
+      '<img class="ph" src="' + src(name) + '" alt="' + esc(opts.alt != null ? opts.alt : altOf(name)) + '"' + (near ? '' : ' loading="lazy"') + ' decoding="async" width="1600" height="900" style="object-position:' + fx + '% 50%">' +
+      '<img class="seal' + (opts.sm ? ' sm' : '') + '" src="' + SEAL + '" alt="' + (opts.thumb ? '' : esc(U.seal)) + '">' + (opts.tag || '') + '</figure>';
+  }
+  function ratioNum(r) { var a = r.split('/'); return (parseFloat(a[0]) / parseFloat(a[1])).toFixed(4); }
+  function tag(okT, text, quiet) { return '<span class="tm-tag' + (okT ? ' ok' : '') + '"' + (quiet ? ' aria-hidden="true"' : '') + '>' + esc(text) + '</span>'; }
+  function words(el) { return el ? (el.textContent.trim().match(/\S+/g) || []).length : 0; }
+
+  /* versioni e leve */
+  function curVersion() {
+    var sel = st.sel[st.s], hit = C().vers.filter(function (v) { return v[1].every(function (x, j) { return x === sel[j]; }); })[0];
+    return hit ? hit[0] : C().vers[0][0];
+  }
+  function setLever(i, val) {
+    var sel = st.sel[st.s].slice(); sel[i] = val;
+    var best = null, score = -1;
+    C().vers.forEach(function (v) {
+      if (v[1][i] !== val) return;
+      var sc = v[1].reduce(function (a, x, j) { return a + (x === sel[j] ? 1 : 0); }, 0);
+      if (sc > score) { score = sc; best = v; }
+    });
+    st.sel[st.s] = best ? best[1].slice() : sel;
+  }
+
+  /* costruzione del palco e della riga sotto (una volta) */
+  var ARW = function (d) { return '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + (d < 0 ? 'M14.5 5.5 8 12l6.5 6.5' : 'M9.5 5.5 16 12l-6.5 6.5') + '"/></svg>'; };
+  stage.innerHTML =
+    '<div class="tm-head"><span class="tm-brand" id="tmBrand"></span><p class="tm-uinote">' + esc(U.uiNote) + '</p><button type="button" class="tm-dbtn" id="tmDemoBtn" hidden></button></div>' +
+    '<ol class="tm-bar" id="tmBar" aria-label="' + esc(U.steps.join(', ')) + '">' +
+      [[0, 2], [1, 1], [2, 1], [3, 3]].map(function (p, k) {
+        var start = STEP.indexOf(k) + 1;
+        return '<li class="tm-stp" style="--c:' + COL[k] + ';grid-column:' + start + ' / span ' + p[1] + '" aria-hidden="true"><b>0' + (k + 1) + '</b><span>' + esc(U.steps[k]) + '</span></li>';
+      }).join('') +
+      U.mom.map(function (mo, m) {
+        return '<li class="tm-mo" style="--c:' + COL[STEP[m]] + ';grid-column:' + (m + 1) + '"><button type="button" data-m="' + m + '" aria-label="0' + (STEP[m] + 1) + ' ' + esc(U.steps[STEP[m]]) + ': ' + esc(mo.n) + '">' + esc(mo.n) + '</button><i class="tm-f" aria-hidden="true"></i>' +
+          (m in GATE ? '<span class="tm-tick" data-g="' + GATE[m] + '" aria-hidden="true"></span>' : '') + '</li>';
+      }).join('') +
+      '<li class="tm-leg" aria-hidden="true"><i></i>' + esc(U.legend) + '</li>' +
+      '<li class="tm-mline" id="tmMline" aria-hidden="true"></li></ol>' +
+    '<div class="tm-view"><div class="tm-frame" id="tmFrame"></div><p class="tm-honest" id="tmHonest"></p></div>' +
+    '<div class="tm-col"><div class="tm-page" id="tmPage"></div><div class="tm-ctl" id="tmCtl"></div></div>' +
+    '<div class="tm-strip" id="tmStrip" aria-label="' + esc(U.stripUi) + '"></div>' +
+    '<p class="tm-vh" id="tmLive" aria-live="polite"></p>';
+  var $ = function (id) { return document.getElementById(id); };
+  var frame = $('tmFrame'), page = $('tmPage'), ctl = $('tmCtl'), strip = $('tmStrip'), bar = $('tmBar'), live = $('tmLive');
+  var track = $('tmTrack'), row = $('tmRow'), exitB = $('tmExit'), endEl = $('tmEnd'), sectorsEl = $('tmSectors'), dBtn = $('tmDemoBtn');
+  var note = section.querySelector('.tm-note');
+  row.innerHTML = '<button type="button" class="tm-arw" data-go="-1" aria-label="' + esc(U.prev) + '">' + ARW(-1) + '</button>' +
+    '<div class="tm-segs" role="group" aria-label="' + esc(U.segAria) + '">' + SECT.map(function (n, i) {
+      return '<button type="button" class="tm-seg" data-seg="' + i + '"><i class="tm-sg" aria-hidden="true"><i></i></i><span>' + esc(n) + '</span></button>';
+    }).join('') + '</div>' +
+    '<button type="button" class="tm-arw" data-go="1" aria-label="' + esc(U.next) + '">' + ARW(1) + '</button>';
+  row.hidden = false;
+  exitB.innerHTML = '<span>' + esc(U.exit) + '</span><span class="tm-vh">' + esc(U.exitMore) + '</span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>';
+  var segs = row.querySelectorAll('.tm-seg'), segFill = row.querySelectorAll('.tm-sg i'), arws = row.querySelectorAll('.tm-arw'), fills = bar.querySelectorAll('.tm-f');
+
+  /* immagine del momento; dentro un settore dissolvenza incrociata, tra settori taglio netto */
+  var viewKey = '', oldT = 0;
+  function renderView(fade) {
+    var m = st.m, c = C(), s = S(), h = '', honest = '';
+    var key = st.s + '|' + m + '|' + st.peek + '|' + st.sel[st.s].join(',');
+    if (key === viewKey) return;
+    viewKey = key;
+    if (st.peek) {
+      var isRej = s.rej.some(function (r) { return r[0] === st.peek; });
+      h = shot(st.peek, { cls: isRej ? 'off' : '', tag: tag(!isRej, isRej ? U.no : U.ok) });
+      if (isRej) honest = s.honest;
+    } else if (m === 0) {
+      h = '<div class="tm-brief"><span class="tm-brand">' + esc(s.brand) + '</span><p>' + esc(s.goal) + '</p><ul>' +
+        s.lev.map(function (l, i) { return '<li>' + esc(l[0]) + ' · <b>' + esc(l[1][st.sel[st.s][i]]) + '</b></li>'; }).join('') + '</ul></div>';
+    } else if (m === 1) { h = shot('concept'); honest = U.board; }
+    else if (m === 2) { h = shot('chiave'); }
+    else if (m === 3) {
+      var cur = curVersion();
+      h = '<div class="tm-comp dev">' + shot('chiave', { cls: 'k' + (cur === 'chiave' ? ' cur' : ''), sm: true }) +
+        shot('sviluppo-1', { cls: cur === 'sviluppo-1' ? 'cur' : '', sm: true }) + shot('sviluppo-2', { cls: cur === 'sviluppo-2' ? 'cur' : '', sm: true }) + '</div>';
+      honest = U.mom[3].honest || '';
+    } else if (m === 4) { h = shot('chiave', { tag: tag(true, U.ok) }); honest = s.honest; }
+    else if (m === 5) {
+      h = '<div class="tm-fmts">' + c.ch.map(function (r, i) { return shot(c.fmt, { ratio: r, sm: i > 0, alt: altOf(c.fmt) + ' · ' + U.fm[R3.indexOf(r)] }); }).join('') + '</div>';
+    } else {
+      h = '<div class="tm-comp arc">' + shot('chiave', { cls: 'k' }) + shot('sviluppo-1', { sm: true }) + shot('sviluppo-2', { sm: true }) + '</div>';
+    }
+    var prev = frame.querySelector('.tm-old'); if (prev) prev.remove();
+    var old = null;
+    if (fade && !rm.matches && frame.firstChild) { old = document.createElement('div'); old.className = 'tm-old'; old.setAttribute('aria-hidden', 'true'); while (frame.firstChild) old.appendChild(frame.firstChild); }
+    frame.innerHTML = h;
+    frame.classList.remove('in');
+    if (old) {
+      frame.insertBefore(old, frame.firstChild); void frame.offsetWidth; frame.classList.add('in');
+      clearTimeout(oldT); oldT = setTimeout(function () { var o = frame.querySelector('.tm-old'); if (o) o.remove(); }, 330);
+    }
+    $('tmHonest').textContent = honest;
+  }
+  /* barra: momenti raggiunti, momento attuale (al computer agganciato si riempie con lo scorrimento), approvazioni */
+  function renderBar() {
+    bar.querySelectorAll('.tm-mo').forEach(function (li, m) {
+      li.classList.toggle('on', m <= st.m);
+      var b = li.querySelector('button'); if (m === st.m) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+      fills[m].style.setProperty('--f', m < st.m ? 1 : m > st.m ? 0 : curFrac());
+    });
+    bar.querySelectorAll('.tm-tick').forEach(function (t) { t.classList.toggle('ok', !!st.ok[st.s][+t.getAttribute('data-g')]); });
+    var k = STEP[st.m];
+    $('tmMline').style.setProperty('--c', COL[k]);
+    $('tmMline').innerHTML = '<b>0' + (k + 1) + '</b><span class="st">' + esc(U.steps[k]) + ' · </span>' + esc(U.mom[st.m].n);
+  }
+  function renderPage(anim) {
+    var k = STEP[st.m], mo = U.mom[st.m];
+    page.style.setProperty('--c', COL[k]);
+    page.innerHTML = '<div class="tm-sl"><b>0' + (k + 1) + '</b>' + esc(U.steps[k]) + '</div><h3>' + esc(mo.n) + '</h3>' +
+      '<p class="tm-line">' + esc(mo.line) + '</p>' +
+      '<div class="tm-pr"><button type="button" class="tm-how" data-how="m" aria-expanded="' + (st.how === 'm') + '" aria-controls="tmCtl">' + esc(st.how === 'm' ? U.close : U.how) + '</button></div>';
+    page.classList.remove('in');
+    if (anim && !rm.matches) { void page.offsetWidth; page.classList.add('in'); }
+  }
+  function gateBtn() {
+    var g = GATE[st.m]; if (g == null) return '';
+    var done = st.ok[st.s][g];
+    return '<button type="button" class="tm-ok" id="tmOk" aria-pressed="' + done + '">' + esc(done ? U.approved : U.approve) + '</button>';
+  }
+  function howHtml() {
+    var s = S(), mo = U.mom[st.m], hw = mo.how, h = '<p>' + esc(hw.lead) + '</p>';
+    if (st.m === 0) h += '<ul>' + s.rules.map(function (r) { return '<li>' + esc(r) + '</li>'; }).join('') + '</ul>';
+    else if (st.m === 4) h += '<table><caption class="tm-vh">' + esc(U.log) + '</caption><thead><tr><th>' + esc(U.logCols[0]) + '</th><th>' + esc(U.logCols[1]) + '</th></tr></thead><tbody>' +
+      s.log.map(function (r) { return '<tr><td>' + esc(r[0]) + '</td><td>' + esc(r[1]) + '</td></tr>'; }).join('') + '</tbody></table>';
+    else if (st.m === 6) h += '<ul>' + s.mem.map(function (r) { return '<li>' + esc(r) + '</li>'; }).join('') + '</ul>';
+    else if (hw.list) h += '<ul>' + hw.list.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>';
+    if (hw.who) h += '<p class="who">' + esc(hw.who) + '</p>';
+    return '<div class="tm-hw">' + h + '<button type="button" class="tm-close" data-how="x">' + esc(U.close) + '</button></div>';
+  }
+  /* comandi: leve nel Brief e nello Sviluppo, motivo della scartata, approvazione */
+  function renderCtl() {
+    var s = S(), m = st.m, h = '';
+    if (st.how) h = howHtml();
+    else {
+      if (m === 0 || m === 3) {
+        h += '<div class="tm-lv" role="group" aria-label="' + esc(U.lvAria) + '">' + s.lev.map(function (l, i) {
+          return '<div><span>' + esc(l[0]) + '</span>' + l[1].map(function (v, j) {
+            return '<button type="button" data-lv="' + i + '" data-v="' + j + '" aria-pressed="' + (st.sel[st.s][i] === j) + '">' + esc(v) + '</button>';
+          }).join('') + '</div>';
+        }).join('') + '</div>';
+      }
+      var r = st.peek && s.rej.filter(function (x) { return x[0] === st.peek; })[0];
+      if (r) h += '<p class="tm-why"><b>' + esc(U.why) + '</b>' + esc(r[1]) + '</p>';
+      h = '<div class="tm-cmd">' + h + gateBtn() + '</div>';
+    }
+    ctl.innerHTML = h;
+  }
+  /* striscia: storico con le scartate; le immagini nuove arrivano da destra, con la rima arrivano tutte */
+  var stripKeys = [];
+  function renderStrip(anim) {
+    var s = S(), m = st.m, items = [];
+    if (m >= 1) items.push(['concept', 1]);
+    if (m >= 2) items.push(['chiave', 1]);
+    if (m >= 3) items.push(['sviluppo-1', 1], ['sviluppo-2', 1]);
+    if (m >= 4) s.rej.forEach(function (r) { items.push([r[0], 0]); });
+    var keys = items.map(function (it) { return st.s + it[0]; });
+    strip.classList.remove('rima');
+    strip.innerHTML = items.map(function (it, i) {
+      var nw = anim === 'new' && stripKeys.indexOf(keys[i]) < 0 && !rm.matches;
+      return '<button type="button" class="tm-th' + (nw ? ' nw' : '') + '" data-peek="' + it[0] + '" aria-pressed="' + (st.peek === it[0]) + '" style="aspect-ratio:16 / 9;--i:' + i + '">' +
+        shot(it[0], { sm: true, thumb: true, cls: it[1] ? '' : 'off', tag: it[1] ? '' : tag(false, U.no, true), alt: it[1] ? null : altOf(it[0]) }) + '</button>';
+    }).join('') || '<div class="tm-ph" style="aspect-ratio:16 / 9" aria-hidden="true"></div>';
+    if (anim === 'rima' && !rm.matches) { void strip.offsetWidth; strip.classList.add('rima'); }
+    stripKeys = keys;
+  }
+  function render(opts) {
+    opts = opts || {};
+    var fk = focusKey();
+    $('tmBrand').textContent = S().brand;
+    renderView(!!opts.fade); renderPage(opts.text); renderCtl(); renderStrip(opts.strip); renderBar();
+    restoreFocus(fk); syncSectors(); syncRow();
+  }
+  /* se il fuoco è nel palco quando si ridisegna, torna sullo stesso comando */
+  function focusKey() {
+    var a = document.activeElement; if (!a || !stage.contains(a) || a === stage) return null;
+    if (a.id) return '#' + a.id;
+    var n = ['data-m', 'data-peek', 'data-how'].filter(function (x) { return a.hasAttribute(x); })[0];
+    if (n) return '[' + n + '="' + a.getAttribute(n) + '"]';
+    if (a.hasAttribute('data-lv')) return '[data-lv="' + a.getAttribute('data-lv') + '"][aria-pressed="true"]';
+    return '[data-m="' + st.m + '"]';
+  }
+  function restoreFocus(k) {
+    if (!k || stage.contains(document.activeElement)) return;
+    var el = stage.querySelector(k) || stage.querySelector('[data-m="' + st.m + '"]');
+    if (el) el.focus({ preventScroll: true });
+  }
+  function say(t) { live.textContent = ''; setTimeout(function () { live.textContent = t; }, 30); }
+  function fill(tpl, k, v) { return String(tpl).split('{' + k + '}').join(v); }
+
+  /* azioni a mano */
+  function goMoment(m, user) {
+    if (m < 0 || m > 6) return;
+    var changed = m !== st.m || st.peek; st.m = m; st.peek = null; if (st.how === 'm') st.how = null;
+    render({ fade: changed, text: changed, strip: 'new' });
+    if (user) say('0' + (STEP[m] + 1) + ' ' + U.steps[STEP[m]] + ', ' + U.mom[m].n + '. ' + U.mom[m].line);
+  }
+  function approve(user) {
+    var g = GATE[st.m]; if (g == null || st.ok[st.s][g]) return;
+    st.ok[st.s][g] = true; renderBar(); renderCtl();
+    if (user) { var b = $('tmOk'); if (b) b.focus({ preventScroll: true }); say(fill(U.liveOk, 'm', U.mom[st.m].n)); }
+  }
+  function pickSector(i, user) {
+    var fwd = i > st.s;
+    st.s = i; st.m = 6; st.peek = null; st.how = null; preload(i);
+    render({ strip: fwd ? 'rima' : '' }); if (fwd) runRima();
+    if (user) say(fill(U.liveSector, 's', SECT[i]));
+  }
+  function stepManual(d) {
+    var m = st.m + d, s = st.s;
+    if (m > 6) { if (s === 3) return; s++; m = 0; } else if (m < 0) { if (s === 0) return; s--; m = 6; }
+    if (s !== st.s) { st.s = s; st.m = m; st.peek = null; st.how = null; preload(s); render({ text: true }); say(fill(U.liveSector, 's', SECT[s]) + ' ' + U.mom[m].n); }
+    else goMoment(m, true);
+  }
+
+  /* la rima: entrando in un settore, la barra si svuota e si riempie di nuovo nei quattro colori in 600 ms */
+  var rimaRaf = 0, rimaT0 = 0, MOM_OF = [[0, 1], [2], [3], [4, 5, 6]];
+  function runRima() {
+    stopRima(); if (rm.matches) return;
+    bar.classList.add('rima'); rimaT0 = performance.now(); rimaFrame(rimaT0);
+  }
+  function rimaFrame(now) {
+    var t = clamp((now - rimaT0) / 600, 0, 1);
+    MOM_OF.forEach(function (ms, k) {
+      var u = clamp((t - k / 4) * 4, 0, 1);
+      ms.forEach(function (m, j) { fills[m].style.setProperty('--f', clamp(u * ms.length - j, 0, 1)); });
+    });
+    bar.querySelectorAll('.tm-tick').forEach(function (tk) { var g = +tk.getAttribute('data-g'), m = +Object.keys(GATE).filter(function (x) { return GATE[x] === g; })[0]; tk.classList.toggle('ok', +fills[m].style.getPropertyValue('--f') >= 1); });
+    if (t < 1) rimaRaf = requestAnimationFrame(rimaFrame); else stopRima();
+  }
+  function stopRima() {
+    if (rimaRaf) cancelAnimationFrame(rimaRaf); rimaRaf = 0;
+    if (bar.classList.contains('rima')) { bar.classList.remove('rima'); renderBar(); }
+  }
+
+  /* il giro: copertina e dieci tappe (cinque divise a metà). Stazione → stato; ok: 1, 2, 4 sono le tre approvazioni */
+  var PATH = [
+    { s: 0, m: 6, ok: 7, w: .08 },
+    { s: 0, m: 0, ok: 0, w: .34 },
+    { s: 0, m: 1, ok: 0, w: .17, hl: 1 }, { s: 0, m: 1, ok: 1, w: .17 },
+    { s: 0, m: 2, ok: 1, w: .17, hl: 1 }, { s: 0, m: 2, ok: 3, w: .17 },
+    { s: 0, m: 3, ok: 3, w: .14 }, { s: 0, m: 3, ok: 3, w: .14, lv: 1 },
+    { s: 0, m: 4, ok: 3, w: .14, lv: 1 }, { s: 0, m: 4, ok: 3, w: .14, lv: 1, rej: 1 },
+    { s: 0, m: 5, ok: 3, w: .17, lv: 1, hl: 1 }, { s: 0, m: 5, ok: 7, w: .17, lv: 1 },
+    { s: 0, m: 6, ok: 7, w: .28, lv: 1 },
+    { s: 1, m: 6, ok: 7, w: .32 }, { s: 2, m: 6, ok: 7, w: .32 }, { s: 3, m: 6, ok: 7, w: .32 }
+  ];
+  var STEPOF = [0, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 8, 9, 10], FIRST = [0, 1, 2, 4, 6, 8, 10, 12, 13, 14, 15], LAST = PATH.length - 1, HY = 12;
+  function applyStation(i) {
+    var P = PATH[i], c = CFG[P.s];
+    st.s = P.s; st.m = P.m; st.how = null;
+    st.peek = P.rej ? U.s[P.s].rej[c.demo.rej][0] : null;
+    st.ok[P.s] = [!!(P.ok & 1), !!(P.ok & 2), !!(P.ok & 4)];
+    st.sel[P.s] = c.vers[0][1].slice(); if (P.lv) setLever(c.demo.lv[0], c.demo.lv[1]);
+  }
+  /* durante il giro si annunciano solo le azioni (frecce, settori, momenti), all'arrivo */
+  function sayStation(i, prevS) {
+    var P = PATH[i], m = P.m;
+    say(P.s !== prevS ? fill(U.liveSector, 's', SECT[P.s]) + ' ' + U.mom[m].n : '0' + (STEP[m] + 1) + ' ' + U.steps[STEP[m]] + ', ' + U.mom[m].n + '. ' + U.mom[m].line);
+  }
+  function showStation(i, how) {
+    var prevS = st.s, prevI = tour.shown;
+    applyStation(i); tour.shown = i;
+    var cross = st.s !== prevS, rima = cross && prevI >= 0 && i > prevI && !rm.matches;
+    if (!rima) stopRima();
+    if (PATH[i].s !== prevS) preload(Math.min(3, PATH[i].s + 1));
+    render({ fade: !cross, text: true, strip: rima ? 'rima' : cross ? '' : 'new' });
+    if (rima) runRima();
+    if (PATH[i].hl) { var b = $('tmOk'); if (b) b.classList.add('hl'); }
+    if (how === 'user' || (tour.goal >= 0 && STEPOF[i] === tour.goal && performance.now() - tour.goalT < 3000)) { tour.goal = -1; sayStation(i, prevS); }
+  }
+
+  /* aggancio: senza movimento ridotto e se palco e riga stanno nello schermo, con 40 px di margine al computer e 16 al telefono.
+     Al telefono il palco agganciato è compatto (classe cmp). L'altezza è quella piccola dello schermo (100svh), che non cambia quando le barre del telefono si nascondono. */
+  var wide = window.matchMedia('(min-width: 761px)');
+  var tour = { armed: false, released: false, cur: 0, shown: -1, vh: 0, B: [], H: 0, y: -1, jumping: false, jt: 0, goal: -1, goalT: 0 };
+  var SB = [], SL = [];
+  var probe = document.createElement('div');
+  probe.setAttribute('aria-hidden', 'true');
+  probe.style.cssText = 'position:fixed;top:0;left:0;width:0;height:100vh;height:100svh;visibility:hidden;pointer-events:none';
+  section.appendChild(probe);
+  function VH() { return probe.offsetHeight || window.innerHeight; }
+  /* salto istantaneo anche dove la pagina scorre morbida (html con scroll-behavior: smooth), in ogni browser */
+  function jumpTo(y) { var s = document.documentElement.style, p = s.scrollBehavior; s.scrollBehavior = 'auto'; window.scrollTo(0, y); s.scrollBehavior = p; }
+  /* misura nella forma agganciata: senza il bottone della demo, che con l'aggancio non c'è; al telefono nella forma compatta */
+  function need() {
+    var h = dBtn.hidden, c = section.classList.contains('cmp'), wantC = !wide.matches;
+    dBtn.hidden = true; if (c !== wantC) section.classList.toggle('cmp', wantC);
+    var n = stage.offsetHeight + 10 + row.offsetHeight + 6 + note.offsetHeight + (wantC ? 6 : 0);
+    dBtn.hidden = h; if (c !== wantC) section.classList.toggle('cmp', c);
+    return n;
+  }
+  function canTour() { return !rm.matches && VH() >= need() + (wide.matches ? 40 : 16); }
+  function geom() {
+    var vh = VH(), acc = 0; tour.vh = vh;
+    tour.B = PATH.map(function (p) { var b = acc; acc += p.w * vh; return b; }); tour.H = acc;
+    SB = FIRST.map(function (f) { return tour.B[f]; });
+    SL = FIRST.map(function (f, k) { return (k + 1 < FIRST.length ? tour.B[FIRST[k + 1]] : tour.H) - tour.B[f]; });
+  }
+  function trackTop() { return track.getBoundingClientRect().top + window.scrollY; }
+  function arm() {
+    geom(); tour.armed = true; tour.released = false;
+    section.classList.add('tour'); section.classList.toggle('cmp', !wide.matches); track.style.height = Math.round(tour.vh + tour.H) + 'px';
+    exitB.hidden = false; demoStop(); syncRow();
+  }
+  /* sgancio sul posto: l'altezza in più si toglie e la pagina si compensa, il palco non si muove */
+  function release(again) {
+    if (!tour.armed) return;
+    cancelPend();
+    var t0 = stage.getBoundingClientRect().top;
+    tour.armed = false; tour.released = !again;
+    section.classList.remove('tour', 'cmp'); track.style.height = ''; exitB.hidden = true;
+    var t1 = stage.getBoundingClientRect().top;
+    if (Math.abs(t1 - t0) > .5) jumpTo(window.scrollY + (t1 - t0));
+    renderBar(); syncRow();
+  }
+  function stationAt(y) {
+    var c = tour.cur;
+    while (c < LAST && y >= tour.B[c + 1] + HY) c++;
+    while (c > 0 && y < tour.B[c] - HY) c--;
+    return c;
+  }
+  function curFrac() {
+    if (!tour.armed || bar.classList.contains('rima')) return 1;
+    var i = tour.shown; if (i < 1 || i > 12) return 1;
+    var k = STEPOF[i]; return clamp((tour.y - SB[k]) / SL[k], 0, 1);
+  }
+  /* al massimo tre cambi al secondo: con una spinta forte si mostra l'ultima tappa raggiunta */
+  var pend = -1, lastR = 0, tmrR = 0;
+  function want(i) {
+    if (i === tour.shown) { cancelPend(); return; }
+    pend = i; var wait = 333 - (performance.now() - lastR);
+    if (wait <= 0) flush(); else if (!tmrR) tmrR = setTimeout(flush, wait);
+  }
+  function flush() { tmrR = 0; if (pend < 0 || !tour.armed) return; var i = pend; pend = -1; lastR = performance.now(); showStation(i, 'scroll'); }
+  function cancelPend() { clearTimeout(tmrR); tmrR = 0; pend = -1; }
+  function goStation(i, quiet) {
+    jumpTo(Math.round(trackTop() + tour.B[i] + HY + 2));
+    tour.y = tour.B[i] + HY + 2; tour.cur = i; cancelPend(); lastR = performance.now(); showStation(i, quiet ? 'jump' : 'user'); tick();
+  }
+  function tourStep(d) {
+    var base = (tour.goal >= 0 && performance.now() - tour.goalT < 900) ? tour.goal : STEPOF[tour.cur];
+    var k = clamp(base + d, 0, FIRST.length - 1); if (k === base) return;
+    tour.goal = k; tour.goalT = performance.now();
+    window.scrollTo({ top: Math.round(trackTop() + SB[k] + HY + 2), behavior: rm.matches ? 'auto' : 'smooth' });
+  }
+  /* riga sotto il palco: segmenti dei settori e frecce */
+  function syncRow() {
+    var tk = tour.armed;
+    segs.forEach(function (b, k) { if (k === st.s) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current'); });
+    if (tk) {
+      var y = tour.y, f0 = clamp(y / tour.B[13], 0, 1);
+      segFill[0].style.setProperty('--f', f0);
+      for (var k = 1; k < 4; k++) segFill[k].style.setProperty('--f', clamp((y - tour.B[12 + k]) / (PATH[12 + k].w * tour.vh), 0, 1));
+      var sk = STEPOF[tour.cur];
+      off(arws[0], sk === 0); off(arws[1], sk === FIRST.length - 1);
+      /* l'uscita c'è finché il giro non è finito; dopo, il bottone della chiusura è già lì */
+      exitB.style.visibility = y > tour.H + 2 ? 'hidden' : '';
+    } else {
+      segFill.forEach(function (f, k) { f.style.setProperty('--f', k < st.s ? 1 : k > st.s ? 0 : (st.m + 1) / 7); });
+      off(arws[0], st.s === 0 && st.m === 0); off(arws[1], st.s === 3 && st.m === 6);
+    }
+  }
+  /* freccia spenta agli estremi: resta raggiungibile, così il fuoco non si perde */
+  function off(b, v) { if (v) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled'); }
+  /* al telefono i quattro tratti sono solo un indicatore: i settori si scelgono con le pillole */
+  var segsBox = row.querySelector('.tm-segs');
+  function segMode() {
+    var ph = !wide.matches;
+    if (ph) segsBox.setAttribute('aria-hidden', 'true'); else segsBox.removeAttribute('aria-hidden');
+    segs.forEach(function (b) { b.tabIndex = ph ? -1 : 0; });
+  }
+  function syncSectors() {
+    sectorsEl.querySelectorAll('[role="tab"]').forEach(function (b, i) { var on = i === st.s; b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1; });
+  }
+  var ticking = false;
+  function tick() {
+    ticking = false;
+    if (!tour.armed) { rearm(); return; }
+    tour.y = -track.getBoundingClientRect().top;
+    tour.cur = stationAt(tour.y);
+    if (!tour.jumping) want(tour.cur);
+    if (tour.shown >= 1 && tour.shown <= 12 && !bar.classList.contains('rima')) fills[st.m].style.setProperty('--f', curFrac());
+    syncRow();
+  }
+  /* il giro si riarma quando la sezione torna tutta sotto lo schermo */
+  function rearm() {
+    if (!tour.released || section.getBoundingClientRect().top <= window.innerHeight || !canTour()) return;
+    arm(); tour.cur = 0; tour.y = -1; cancelPend(); showStation(0, 'jump');
+  }
+  function req() { if (tour.jumping) settle(); if (!ticking) { ticking = true; requestAnimationFrame(tick); } }
+  /* salti lunghi (bottone in alto, link interni): il palco non si ridisegna finché la pagina non si ferma */
+  var hasEnd = 'onscrollend' in window;
+  function endJump() { clearTimeout(tour.jt); tour.jumping = false; lastR = 0; req(); }
+  function settle() { clearTimeout(tour.jt); tour.jt = setTimeout(endJump, hasEnd ? 1200 : 250); }
+  if (hasEnd) window.addEventListener('scrollend', function () { if (tour.jumping) endJump(); });
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('[data-contact], a[href^="#"]');
+    if (a && tour.armed && !stage.contains(a)) { tour.jumping = true; settle(); }
+  }, true);
+
+  /* clic e tocchi */
+  function grabs(b) { return b && b.tagName === 'BUTTON' && !(b.hasAttribute('data-m') && st.s === 0) && b !== dBtn; }
+  /* col mouse lo sgancio parte alla pressione; col dito solo al tocco vero (clic), così uno scorrimento che parte sopra un bottone non sgancia il palco */
+  stage.addEventListener('pointerdown', function (e) { if (e.pointerType === 'mouse' && tour.armed && grabs(e.target.closest('button'))) release(); }, true);
+  stage.addEventListener('click', function (e) { if (tour.armed && grabs(e.target.closest('button'))) release(); }, true);
+  stage.addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b || b === dBtn) return;
+    if (b.hasAttribute('data-m')) {
+      var m = +b.getAttribute('data-m');
+      if (tour.armed) { goStation(FIRST[m + 1]); return; }
+      goMoment(m, true); return;
+    }
+    if (b.hasAttribute('data-how')) { var w = b.getAttribute('data-how'); st.how = w === 'x' || st.how === w ? null : w; renderPage(); renderCtl(); var f = (st.how ? ctl.querySelector('.tm-close') : page.querySelector('.tm-how')); if (f) f.focus({ preventScroll: true }); return; }
+    if (b.id === 'tmOk') { approve(true); return; }
+    if (b.hasAttribute('data-lv')) {
+      var i = +b.getAttribute('data-lv'), before = curVersion(); setLever(i, +b.getAttribute('data-v'));
+      renderView(st.m === 3); renderCtl(); var again = ctl.querySelector('[data-lv="' + i + '"][aria-pressed="true"]'); if (again) again.focus({ preventScroll: true });
+      if (st.m === 3 && curVersion() !== before) say(U.liveLever + ' ' + altOf(curVersion()) + '.');
+      return;
+    }
+    if (b.hasAttribute('data-peek')) {
+      var p = b.getAttribute('data-peek'); st.peek = st.peek === p ? null : p; renderView(true); renderCtl(); renderStrip(''); var pb = strip.querySelector('[data-peek="' + p + '"]'); if (pb) pb.focus({ preventScroll: true });
+      var rj = st.peek && S().rej.filter(function (r) { return r[0] === p; })[0]; if (rj) say(U.liveRej + ' ' + rj[1]);
+    }
+  });
+  row.addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    if (b.hasAttribute('data-go')) { if (b.getAttribute('aria-disabled') === 'true') return; var d = +b.getAttribute('data-go'); if (tour.armed) tourStep(d); else stepManual(d); return; }
+    if (b.hasAttribute('data-seg')) { var i = +b.getAttribute('data-seg'); if (tour.armed) goStation(i === 0 ? 1 : 12 + i); else pickSector(i, true); }
+  });
+  function pillPick(i, viaKey) {
+    if (tour.armed) { goStation(i === 0 ? 1 : 12 + i); if (wide.matches) segs[i].focus({ preventScroll: true }); return; }
+    pickSector(i, true); if (viaKey) sectorsEl.querySelectorAll('[role="tab"]')[i].focus();
+  }
+  sectorsEl.addEventListener('click', function (e) { var b = e.target.closest('[role="tab"]'); if (b) pillPick(+b.getAttribute('data-s')); });
+  sectorsEl.addEventListener('keydown', function (e) {
+    if (['ArrowLeft', 'ArrowRight', 'Home', 'End'].indexOf(e.key) < 0) return;
+    var tabs = Array.prototype.slice.call(sectorsEl.querySelectorAll('[role="tab"]')), i = tabs.indexOf(document.activeElement); if (i < 0) return;
+    e.preventDefault();
+    var n = e.key === 'Home' ? 0 : e.key === 'End' ? tabs.length - 1 : (i + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+    pillPick(n, true);
+  });
+  /* uscita: un salto alla chiusura della sezione, con il fuoco sul bottone */
+  exitB.addEventListener('click', function () {
+    tour.jumping = true; settle();
+    var r = endEl.getBoundingClientRect();
+    jumpTo(Math.round(window.scrollY + r.top - Math.max(24, (VH() - r.height) / 2)));
+    var b = endEl.querySelector('[data-contact]'); if (b) b.focus({ preventScroll: true });
+  });
+
+  /* immagini: quelle del settore dopo si caricano in anticipo, così non c'è mai un riquadro vuoto */
+  var pre = {};
+  function preload(s) {
+    if (pre[s] || !near) return; pre[s] = [];
+    var c = CFG[s], names = ['concept', 'chiave', 'sviluppo-1', 'sviluppo-2', c.fmt].concat(U.s[s].rej.map(function (r) { return r[0]; }));
+    names.filter(function (n, i) { return names.indexOf(n) === i; }).forEach(function (n) {
+      var im = new Image(); im.decoding = 'async'; im.src = src(n, s); if (im.decode) im.decode().catch(function () {}); pre[s].push(im);
+    });
+  }
+
+  /* demo a tempo, dove il palco non si aggancia (telefono, schermi bassi): lo stesso giro, una volta */
+  var demo = { on: !rm.matches, i: 1, run: 0, playing: false, visible: false, hover: false, why: 'start', first: null, t: [] };
+  function demoAllowed() { return !rm.matches && !tour.armed && !tour.released; }
+  function readMs() { var n = words(page.querySelector('.tm-line')) + words(ctl.querySelector('.tm-cmd')); return clamp(1500 + Math.round(n / 3 * 1000), 4000, 8000); }
+  function stMs(i) {
+    var P = PATH[i];
+    if (P.s > 0) return 5000;
+    if (P.hl) return Math.max(2500, readMs() - 1500);
+    if (i === 3 || i === 5 || i === 11) return 1500;
+    if (i === 6 || i === 8) return Math.max(2500, readMs() - 1500);
+    if (i === 7) return 3000;
+    if (i === 9) return 4000;
+    return readMs();
+  }
+  function clearT() { demo.t.forEach(clearTimeout); demo.t = []; }
+  function renderDemo() {
+    var show = demoAllowed(); dBtn.hidden = !show; if (!show) return;
+    var playing = demo.on && demo.why !== 'end';
+    dBtn.textContent = playing ? U.pause : demo.why === 'end' ? U.again : U.resume;
+    dBtn.setAttribute('aria-label', playing ? U.pauseAria : demo.why === 'end' ? U.againAria : U.resumeAria);
+  }
+  function step(run) {
+    if (run !== demo.run) return;
+    showStation(demo.i, 'demo');
+    if (demo.i >= LAST) { demo.on = false; demo.playing = false; demo.why = 'end'; demo.i = 1; renderDemo(); return; }
+    demo.t.push(setTimeout(function () { if (run !== demo.run) return; demo.i++; step(run); }, stMs(demo.i)));
+  }
+  function pause(why) { demo.run++; clearT(); demo.playing = false; if (why) { demo.on = false; demo.why = why; } renderDemo(); }
+  function start() {
+    if (!demoAllowed() || demo.playing || !demo.on || !demo.visible || demo.hover || document.hidden) return;
+    demo.playing = true; demo.why = ''; renderDemo(); step(++demo.run);
+  }
+  function demoStop() { demo.run++; clearT(); demo.playing = false; clearTimeout(demo.first); renderDemo(); }
+  function takeControl(e) {
+    if (!demo.on || !demoAllowed() || e.target.closest('#tmDemoBtn')) return;
+    if (e.type === 'keydown' && ['Tab', 'Shift'].indexOf(e.key) >= 0) return;
+    pause('user');
+  }
+  section.addEventListener('pointerdown', takeControl, true);
+  section.addEventListener('keydown', takeControl, true);
+  dBtn.addEventListener('click', function () {
+    if (demo.on && demo.why !== 'end') { pause('pause'); return; }
+    demo.on = true; demo.why = ''; demo.hover = false; clearTimeout(demo.first); renderDemo(); start();
+  });
+  var fine = window.matchMedia('(hover: hover) and (pointer: fine)'), mv = null;
+  stage.addEventListener('mousemove', function (e) {
+    if (!fine.matches || !demo.playing) { mv = null; return; }
+    if (!mv) { mv = [e.clientX, e.clientY]; return; }
+    if (Math.abs(e.clientX - mv[0]) + Math.abs(e.clientY - mv[1]) >= 8) { mv = null; demo.hover = true; demo.run++; clearT(); demo.playing = false; }
+  });
+  stage.addEventListener('mouseleave', function () { mv = null; if (!demo.hover) return; demo.hover = false; start(); });
+  stage.addEventListener('focusin', function (e) { if (demo.on && demoAllowed() && e.target !== dBtn) pause('user'); });
+
+  /* quando la sezione si avvicina: immagini caricate; a metà palco visibile la demo parte dopo 3 secondi */
+  function nearNow() {
+    if (near) return; near = true;
+    [].forEach.call(stage.querySelectorAll('img[loading]'), function (i) { i.removeAttribute('loading'); });
+    preload(0); preload(1); if (tour.armed) { preload(2); preload(3); }
+  }
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (en, ob) { if (en[0].isIntersecting) { nearNow(); ob.disconnect(); } }, { rootMargin: '100% 0px' }).observe(section);
+    new IntersectionObserver(function (en) {
+      en.forEach(function (x) {
+        demo.visible = x.intersectionRatio >= 0.5;
+        if (demo.visible) { if (demo.why === 'start' && demo.on) { clearTimeout(demo.first); demo.first = setTimeout(function () { if (demo.visible && demo.why === 'start') start(); }, 3000); } else start(); }
+        else { clearTimeout(demo.first); if (demo.playing) { demo.run++; clearT(); demo.playing = false; } }
+      });
+    }, { threshold: [0, 0.5] }).observe(stage);
+  } else near = true;
+  document.addEventListener('visibilitychange', function () { if (document.hidden) { if (demo.playing) { demo.run++; clearT(); demo.playing = false; } } else start(); });
+
+  /* misure: si ricalcola a ogni cambio vero (larghezza o altezza piccola dello schermo), tenendo la tappa.
+     Le barre del telefono che si nascondono cambiano solo l'altezza grande: lì non si ricalcola niente. */
+  var rz = 0, rzForce = false, lastKey = '';
+  function sched(force) { if (force) rzForce = true; if (!rz) rz = requestAnimationFrame(function () { var f = rzForce; rzForce = false; reconf(f); }); }
+  function reconf(force) {
+    rz = 0;
+    var key = window.innerWidth + 'x' + VH();
+    if (!force && key === lastKey) return;
+    lastKey = key; segMode();
+    if (tour.armed) section.classList.toggle('cmp', !wide.matches);
+    var can = canTour();
+    if (tour.armed && !can) {
+      var i = tour.shown; release(true);
+      if (!rm.matches) { demo.on = true; demo.why = 'start'; demo.i = clamp(i, 1, LAST); if (demo.visible) { clearTimeout(demo.first); demo.first = setTimeout(function () { if (demo.visible && demo.why === 'start') start(); }, 3000); } }
+      renderDemo(); return;
+    }
+    if (tour.armed) {
+      var i0 = tour.cur, fr = clamp((tour.y - tour.B[i0]) / (PATH[i0].w * tour.vh), 0, 1), inside = tour.y >= 0 && tour.y <= tour.H;
+      geom(); track.style.height = Math.round(tour.vh + tour.H) + 'px';
+      if (inside) { jumpTo(Math.round(trackTop() + tour.B[i0] + fr * PATH[i0].w * tour.vh)); }
+      req(); return;
+    }
+    if (can && !tour.released) {
+      var vis = section.getBoundingClientRect().top < window.innerHeight && section.getBoundingClientRect().bottom > 0, keep = tour.shown;
+      arm();
+      if (vis && keep > 0) goStation(keep, true); else { tour.cur = 0; showStation(0, 'jump'); }
+      return;
+    }
+    renderDemo();
+  }
+  window.addEventListener('resize', function () { sched(false); });
+  if (rm.addEventListener) rm.addEventListener('change', function () {
+    if (rm.matches) { demoStop(); demo.on = false; if (tour.armed) release(true); tour.released = false; st.s = 0; st.m = 6; st.ok[0] = [true, true, true]; st.peek = null; render({}); }
+    else { demo.on = true; demo.why = 'start'; reconf(true); }
+    renderDemo();
+  });
+  window.addEventListener('scroll', req, { passive: true });
+  window.addEventListener('load', function () { sched(true); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { sched(true); });
+
+  /* partenza: risultato finito dell'Intrattenimento */
+  segMode(); render({});
+  lastKey = window.innerWidth + 'x' + VH();
+  if (canTour()) { arm(); tour.cur = 0; showStation(0, 'jump'); tick(); }
+  renderDemo();
+})();
+</script>
 
 
 <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Full episode" hidden>
