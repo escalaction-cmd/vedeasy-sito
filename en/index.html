@@ -1865,7 +1865,7 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(28px + 56px
     strip.classList.remove('rima');
     strip.innerHTML = items.map(function (it, i) {
       var nw = anim === 'new' && stripKeys.indexOf(keys[i]) < 0 && !rm.matches;
-      return '<button type="button" class="tm-th' + (nw ? ' nw' : '') + '" data-peek="' + it[0] + '" aria-pressed="' + (st.peek === it[0]) + '" style="aspect-ratio:16 / 9;--i:' + i + '">' +
+      return '<button type="button" class="tm-th' + (nw ? ' nw' : '') + '" data-peek="' + it[0] + '" aria-pressed="' + (st.peek === it[0]) + '" aria-label="' + esc(altOf(it[0])) + '" style="aspect-ratio:16 / 9;--i:' + i + '">' +
         shot(it[0], { sm: true, thumb: true, cls: it[1] ? '' : 'off', tag: it[1] ? '' : tag(false, U.no, true), alt: it[1] ? null : altOf(it[0]) }) + '</button>';
     }).join('') || '<div class="tm-ph" style="aspect-ratio:16 / 9" aria-hidden="true"></div>';
     if (anim === 'rima' && !rm.matches) { void strip.offsetWidth; strip.classList.add('rima'); }
@@ -2513,6 +2513,16 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(28px + 56px
   });
   $('lbClose').addEventListener('click', closeEp);
   lb.addEventListener('click', function (e) { if (e.target === lb) closeEp(); });
+  /* Tab gira solo tra Chiudi e il video: dentro i comandi interni del video Chrome si tiene i tasti e Esc non arriverebbe */
+  lb.addEventListener('keydown', function (e) {
+    if (e.key !== 'Tab') return;
+    e.preventDefault();
+    if (document.activeElement === lbv) $('lbClose').focus(); else { lbTab = true; lbv.focus(); lbTab = false; }
+  });
+  /* dopo un clic sui tasti del video il fuoco torna su Chiudi, e non esce mai dalla finestra aperta */
+  var lbTab = false;
+  lbv.addEventListener('focusin', function () { if (!lbTab) setTimeout(function () { if (!lb.hidden) $('lbClose').focus({ preventScroll: true }); }, 0); });
+  document.addEventListener('focusin', function (e) { if (!lb.hidden && !lb.contains(e.target)) $('lbClose').focus({ preventScroll: true }); });
 
   /* finestre privacy e note */
   var sheetFocus = null, openSheetEl = null;
@@ -2538,10 +2548,11 @@ footer { border-top: 1px solid var(--line); padding-block: 44px calc(28px + 56px
     if (e.target.closest && e.target.closest('[data-close]')) { hideSheet(); return; }
     if (e.target.classList && e.target.classList.contains('sheet')) hideSheet();
   });
+  /* in cattura: i comandi del video non si tengono il tasto */
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
-    if (!lb.hidden) closeEp(); else hideSheet();
-  });
+    if (!lb.hidden) { e.preventDefault(); closeEp(); } else hideSheet();
+  }, true);
   function fromHash() {
     var h = location.hash.replace('#', '');
     if (h === 'privacy' || h === 'note') showSheet(h, true);
